@@ -5,14 +5,14 @@ FROM arm64v8/debian:buster-slim AS buildstep
 WORKDIR /opt/iotloragateway/dev
 
 RUN apt-get update && apt-get -y install \
-  automake \
-  libtool \
-  autoconf \
-  git \
-  ca-certificates \
-  pkg-config \
-  build-essential \
-  wget \
+  automake=1.16.1-4 \
+  libtool=2.4.6-9 \
+  autoconf=2.69-11 \
+  git=2.20.1-2 \
+  ca-certificates=20190110 \
+  pkg-config=0.29-6 \
+  build-essential=12.6 \
+  wget=1.20.1-1.1 \
   --no-install-recommends
 
 COPY buildfiles buildfiles
