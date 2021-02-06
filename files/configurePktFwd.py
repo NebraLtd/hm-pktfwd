@@ -1,31 +1,29 @@
-#Configure Packet Forwarder Program
-#Configures the packet forwarder based on the YAML File and Env Variables
+# Configure Packet Forwarder Program
+# Configures the packet forwarder based on the YAML File and Env Variables
 import os
-import subprocess
 import json
-from pprint import pprint
 from shutil import copyfile
 
 from time import sleep
 regionID = str(os.environ['REGION'])
-#moduleId = 0
+# moduleId = 0
 
 print("Sleeping 10 seconds")
 sleep(10)
 
-#Region dictionary
+# Region dictionary
 regionList = {
-    "AS923" : "AS-global_conf.json",
-    "AU915" : "AU-global_conf.json",
-    "CN470" : "CN-global_conf.json",
-    "EU868" : "EU-global_conf.json",
-    "IN865" : "IN-global_conf.json",
-    "KR920" : "KR-global_conf.json",
-    "RU864" : "RU-global_conf.json",
-    "US915" : "US-global_conf.json"
+    "AS923": "AS-global_conf.json",
+    "AU915": "AU-global_conf.json",
+    "CN470": "CN-global_conf.json",
+    "EU868": "EU-global_conf.json",
+    "IN865": "IN-global_conf.json",
+    "KR920": "KR-global_conf.json",
+    "RU864": "RU-global_conf.json",
+    "US915": "US-global_conf.json"
 }
 
-#Configuration function
+# Configuration function
 
 def writeRegionConfSx1301(regionId):
     regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1301/lora_templates_sx1301/"+regionList[regionId]
@@ -42,23 +40,15 @@ def writeRegionConfSx1302(regionId):
 
     copyfile(regionconfFile,globalPath)
 
-
-
-
-
-#If HAT Enabled
-
+# If HAT Enabled
 
 with open("/var/pktfwd/diagnostics", 'w') as diagOut:
     diagOut.write("true")
 failTimes = 0
 
-#Reset on pin 38
 while True:
 
-
     euiTest = os.popen('/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id -d /dev/spidev1.2').read()
-
 
     print("Starting")
     os.system("./reset-38.sh")
@@ -85,8 +75,4 @@ while True:
         with open("/var/pktfwd/diagnostics", 'w') as diagOut:
             diagOut.write("false")
 
-
-
-
-
-#Sleep forever
+# Sleep forever
