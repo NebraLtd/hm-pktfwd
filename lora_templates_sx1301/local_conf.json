@@ -11,7 +11,7 @@
                 "serv_enabled": true
 	    }
 	],
-	"gps": true,
+	"gps": false,
   "fake_gps": true,
   "ref_latitude": 0,
   "ref_longitude": 0,
