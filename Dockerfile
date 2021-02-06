@@ -33,7 +33,6 @@ WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
 RUN apt-get update && \
 apt-get -y install \
 python3=3.7.3-1 \
-python3-rpi.gpio=0.7.0 \
 --no-install-recommends && \
 apt-get clean && \
 rm -rf /var/lib/apt/lists/*
