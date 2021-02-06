@@ -15,7 +15,6 @@
   "fake_gps": true,
   "ref_latitude": 0,
   "ref_longitude": 0,
-  "ref_altitude": 0,
-  "gps_tty_path":"/dev/serial1"
+  "ref_altitude": 0
     }
 }
