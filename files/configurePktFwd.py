@@ -9,13 +9,13 @@ from time import sleep
 print("Frequency Checking")
 
 regionID = None
-while(regionID == None):
-    #While no region set
+while(regionID is None):
+    # While no region set
     try:
         with open("/var/pktfwd/region", 'r') as regionOut:
             regionFile = regionOut.read()
 
-            if(len(regionFile)>3):
+            if(len(regionFile) > 3):
                 print("Frequency: %s") % (regionFile, )
                 regionID = regionFile
                 break
