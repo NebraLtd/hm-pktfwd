@@ -16,7 +16,7 @@ while(regionID is None):
             regionFile = regionOut.read()
 
             if(len(regionFile) > 3):
-                print("Frequency: %s") % (regionFile, )
+                print("Frequency: " + str(regionFile))
                 regionID = regionFile
                 break
         sleep(15)
