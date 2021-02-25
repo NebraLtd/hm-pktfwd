@@ -19,10 +19,13 @@ while(regionID is None):
                 print("Frequency: " + str(regionFile))
                 regionID = regionFile
                 break
+        print("Invalid Contents")
         sleep(15)
         print("Try loop again")
     except FileNotFoundError:
-        sleep(15)
+        print("File Not Detected, Sleeping")
+        sleep(30)
+
 # Start the Module
 
 print("Starting Module")
