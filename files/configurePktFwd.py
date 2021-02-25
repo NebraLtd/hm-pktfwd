@@ -5,7 +5,29 @@ import json
 from shutil import copyfile
 
 from time import sleep
-regionID = str(os.environ['REGION'])
+
+print("Frequency Checking")
+
+regionID = None
+while(regionID == None):
+    #While no region set
+    try:
+        with open("/var/pktfwd/region", 'r') as regionOut:
+            regionFile = regionOut.read()
+
+            if(len(regionFile)>3):
+                print("Frequency: %s") % (regionFile, )
+                regionID = regionFile
+                break
+        sleep(15)
+        print("Try loop again")
+    except FileNotFoundError:
+        sleep(15)
+# Start the Module
+
+print("Starting Module")
+
+# regionID = str(os.environ['REGION'])
 # moduleId = 0
 
 print("Sleeping 10 seconds")
