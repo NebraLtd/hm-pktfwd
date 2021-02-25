@@ -17,7 +17,7 @@ while(regionID is None):
 
             if(len(regionFile) > 3):
                 print("Frequency: " + str(regionFile))
-                regionID = regionFile
+                regionID = str(regionFile).rstrip('\n')
                 break
         print("Invalid Contents")
         sleep(15)
