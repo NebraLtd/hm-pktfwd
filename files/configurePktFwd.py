@@ -6,6 +6,11 @@ from shutil import copyfile
 
 from time import sleep
 
+print("Starting pktfwd container")
+
+with open("/var/pktfwd/diagnostics", 'w') as diagOut:
+    diagOut.write("true")
+
 print("Frequency Checking")
 
 regionID = None
@@ -67,8 +72,6 @@ def writeRegionConfSx1302(regionId):
 
 # If HAT Enabled
 
-with open("/var/pktfwd/diagnostics", 'w') as diagOut:
-    diagOut.write("true")
 failTimes = 0
 
 while True:
