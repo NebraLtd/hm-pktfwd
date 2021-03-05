@@ -1,6 +1,6 @@
 name: Compile Docker Images
 
-on: ["pull"]
+on: [push]
 
 jobs:
   main:
