@@ -25,11 +25,11 @@ while(regionID is None):
                 regionID = str(regionFile).rstrip('\n')
                 break
         print("Invalid Contents")
-        sleep(15)
+        sleep(30)
         print("Try loop again")
     except FileNotFoundError:
         print("File Not Detected, Sleeping")
-        sleep(30)
+        sleep(60)
 
 # Start the Module
 
