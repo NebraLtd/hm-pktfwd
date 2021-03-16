@@ -26,7 +26,7 @@ RUN ./buildfiles/compileSX1301.sh
 RUN chmod +x ./buildfiles/compileSX1302.sh
 RUN ./buildfiles/compileSX1302.sh
 
-FROM arm32v6/debian:buster-slim
+FROM arm32v5/debian:buster-slim
 
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
 
