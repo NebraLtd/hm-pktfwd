@@ -1,7 +1,7 @@
 #Packet Forwarder Docker File
 #(C) Pi Supply 2019
 #Licensed under the GNU GPL V3 License.
-FROM balenalib/raspberry-pi-debian:buster-build as build
+FROM balenalib/raspberry-pi-debian:buster-build as buildstep
 WORKDIR /opt/iotloragateway/dev
 
 RUN apt-get update && apt-get -y install \
@@ -37,8 +37,6 @@ python3-rpi.gpio=0.6.5-1 \
 --no-install-recommends && \
 apt-get clean && \
 rm -rf /var/lib/apt/lists/*
-
-
 
 COPY --from=buildstep /opt/iotloragateway/packetforwarder .
 
