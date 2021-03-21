@@ -55,6 +55,7 @@ regionList = {
 
 # Configuration function
 
+
 def writeRegionConfSx1301(regionId):
     regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1301/lora_templates_sx1301/"+regionList[regionId]
     with open(regionconfFile) as regionconfJFile:
@@ -64,11 +65,13 @@ def writeRegionConfSx1301(regionId):
     with open(globalPath, 'w') as jsonOut:
         json.dump(newGlobal, jsonOut)
 
+
 def writeRegionConfSx1302(regionId):
     regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1302/lora_templates_sx1302/"+regionList[regionId]
     globalPath = "/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/global_conf.json"
 
-    copyfile(regionconfFile,globalPath)
+    copyfile(regionconfFile, globalPath)
+
 
 # If HAT Enabled
 
@@ -89,7 +92,6 @@ while True:
         os.system("/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/lora_pkt_fwd")
         print("Software crashed, restarting")
         failTimes += 1
-
 
     else:
         print("SX1301")
