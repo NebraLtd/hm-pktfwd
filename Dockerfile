@@ -1,7 +1,7 @@
 #Packet Forwarder Docker File
 #(C) Pi Supply 2019
 #Licensed under the GNU GPL V3 License.
-FROM balenalib/raspberry-pi-debian:buster-build as buildstep
+FROM arm32v5/debian:buster-slim AS buildstep
 WORKDIR /opt/iotloragateway/dev
 
 RUN apt-get update && apt-get -y install \
@@ -26,17 +26,19 @@ RUN ./buildfiles/compileSX1301.sh
 RUN chmod +x ./buildfiles/compileSX1302.sh
 RUN ./buildfiles/compileSX1302.sh
 
-FROM balenalib/raspberry-pi-debian:buster-run
+FROM arm32v5/debian:buster-slim
 
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
 
 RUN apt-get update && \
 apt-get -y install \
 python3=3.7.3-1 \
-python3-rpi.gpio=0.7.0-0.1~bpo10+4 \
+python3-rpi.gpio=0.6.5-1 \
 --no-install-recommends && \
 apt-get clean && \
 rm -rf /var/lib/apt/lists/*
+
+
 
 COPY --from=buildstep /opt/iotloragateway/packetforwarder .
 
