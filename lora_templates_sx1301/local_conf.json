@@ -1,16 +1,14 @@
 {
-    "gateway_conf": {
-        "gateway_ID": "AA555A0000000000",
-	       "description": "helium-miner",
-	        "servers": [
-            {
-                "serv_type": "semtech",
-                "server_address": "helium-miner",
-                "serv_port_up": 1680,
-                "serv_port_down": 1680,
-                "serv_enabled": true
-	    }
-	],
+  "gateway_conf": {
+    "server_address": "helium-miner",
+    "serv_port_up": 1680,
+    "serv_port_down": 1680,
+    "servers": [ {
+      "server_address": "helium-miner",
+      "serv_port_up": 1680,
+      "serv_port_down": 1680,
+      "serv_enabled": true
+    } ],
 	"gps": false,
   "fake_gps": true,
   "ref_latitude": 0,
