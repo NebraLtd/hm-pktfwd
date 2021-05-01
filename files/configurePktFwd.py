@@ -1,5 +1,6 @@
 # Configure Packet Forwarder Program
 # Configures the packet forwarder based on the YAML File and Env Variables
+import subprocess
 import os
 import json
 from shutil import copyfile
@@ -79,7 +80,8 @@ while True:
     euiTest = os.popen('/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id -d /dev/spidev1.2').read()
 
     print("Starting")
-    os.system("./reset-38.sh")
+    reset_pin = 38
+    subprocess.call(['/opt/iotloragateway/packet_forwarder/reset-v2.sh', reset_pin])
     sleep(2)
 
     if "concentrator EUI:" in euiTest:
