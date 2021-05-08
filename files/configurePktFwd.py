@@ -81,7 +81,7 @@ while True:
 
     print("Starting")
     reset_pin = 38
-    subprocess.call(['/opt/iotloragateway/packet_forwarder/reset-v2.sh', reset_pin])
+    subprocess.call(['/opt/iotloragateway/packet_forwarder/reset-v2.sh', str(reset_pin)])
     sleep(2)
 
     if "concentrator EUI:" in euiTest:
