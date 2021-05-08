@@ -11,7 +11,7 @@ from time import sleep
 print("Starting pktfwd container")
 
 # Sentry Diagnostics Code
-sentry_key = os.getenv('SENTRY_CONFIG')
+sentry_key = os.getenv('SENTRY_PKTFWD')
 balena_id = os.getenv('BALENA_DEVICE_UUID')
 balena_app = os.getenv('BALENA_APP_NAME')
 sentry_sdk.init(sentry_key, environment=balena_app)
