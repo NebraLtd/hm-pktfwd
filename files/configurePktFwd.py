@@ -1,5 +1,6 @@
 # Configure Packet Forwarder Program
 # Configures the packet forwarder based on the YAML File and Env Variables
+import sentry_sdk
 import subprocess
 import os
 import json
@@ -8,6 +9,14 @@ from shutil import copyfile
 from time import sleep
 
 print("Starting pktfwd container")
+
+# Sentry Diagnostics Code
+sentry_key = os.getenv('SENTRY_CONFIG')
+balena_id = os.getenv('BALENA_DEVICE_UUID')
+balena_app = os.getenv('BALENA_APP_NAME')
+sentry_sdk.init(sentry_key, environment=balena_app)
+sentry_sdk.set_user({"id": balena_id})
+
 
 with open("/var/pktfwd/diagnostics", 'w') as diagOut:
     diagOut.write("true")
