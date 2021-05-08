@@ -34,7 +34,11 @@ RUN apt-get update && \
 apt-get -y install \
 python3=3.7.3-1 \
 python3-rpi.gpio=0.6.5-1 \
+python3-pip=18.1-5 \
 --no-install-recommends && \
+pip3 install sentry-sdk==1.0.0 &&\
+apt-get purge python3-pip -y &&\
+apt-get autoremove -y &&\
 apt-get clean && \
 rm -rf /var/lib/apt/lists/*
 
