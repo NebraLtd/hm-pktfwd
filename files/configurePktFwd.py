@@ -5,8 +5,15 @@ import subprocess
 import os
 import json
 from shutil import copyfile
+from variant_definitions import variant_definitions
 
 from time import sleep
+
+variant = os.getenv('VARIANT')
+variant_variables = variant_definitions[variant]
+print("Hardware Variant %s Detected" % variant)
+print("SPI: %s" % variant_variables['SPIBUS'])
+print("RESET: %s" % str(variant_variables['RESET']))
 
 print("Starting Packet Forwarder Container")
 
