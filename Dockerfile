@@ -28,6 +28,7 @@ RUN ./buildfiles/compileSX1301.sh spidev1.2
 RUN ./buildfiles/compileSX1301.sh spidev2.0
 RUN ./buildfiles/compileSX1301.sh spidev2.1
 RUN ./buildfiles/compileSX1301.sh spidev32766.0
+RUN ls /opt/iotloragateway/packetforwarder/
 
 
 RUN chmod +x ./buildfiles/compileSX1302.sh
@@ -63,8 +64,6 @@ RUN chmod 777 ./local_conf.json
 #RUN chmod +x ./packet_forwarder
 
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1302
-
-
 
 COPY --from=buildstep /opt/iotloragateway/dev/sx1302_hal-1.0.5 .
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1302/util_chip_id
