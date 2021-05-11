@@ -1,12 +1,4 @@
 #! /bin/bash
-
-mkdir -p /opt/iotloragateway
-mkdir -p /opt/iotloragateway/dev
-cd /opt/iotloragateway/dev || exit
-
-git clone https://github.com/NebraLtd/lora_gateway.git
-git clone https://github.com/NebraLtd/packet_forwarder.git
-
 echo "Compiling for $1"
 
 cd /opt/iotloragateway/dev/lora_gateway/libloragw || exit
