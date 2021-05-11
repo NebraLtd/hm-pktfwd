@@ -56,11 +56,8 @@ while(regionID is None):
 # Start the Module
 
 print("Starting Module")
-
-# regionID = str(os.environ['REGION'])
-
-print("Sleeping 10 seconds")
-sleep(10)
+print("Sleeping 5 seconds")
+sleep(5)
 
 # Region dictionary
 regionList = {
