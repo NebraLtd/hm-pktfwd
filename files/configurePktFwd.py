@@ -95,6 +95,7 @@ def writeRegionConfSx1301(regionId):
         json.dump(newGlobal, jsonOut)
 
 def writeRegionConfSx1302(regionId):
+    # Writes the configuration files
     regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1302/lora_templates_sx1302/"+regionList[regionId]
     globalPath = "/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/global_conf.json"
 
@@ -103,9 +104,15 @@ def writeRegionConfSx1302(regionId):
 # Log the amount of times it has failed starting
 failTimes = 0
 
+# Write the correct reset pin to sx1302 reset
+
+gpioResetSED = "sed -i 's/SX1302_RESET_PIN=../SX1302_RESET_PIN=%s/g' reset_lgw.sh" % str(reset_pin)
+subprocess.call(['s/spidev0.0/$1/g'])
+
 while True:
 
-    euiTest = os.popen('/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id -d /dev/spidev1.2').read()
+    euiPATH = '/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id -d /dev/%s' % spi_bus
+    euiTest = os.popen(euiPATH).read()
 
     print("Starting")
 
