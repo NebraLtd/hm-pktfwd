@@ -19,6 +19,16 @@ COPY buildfiles buildfiles
 COPY sx1302fixes sx1302fixes
 
 ARG moo=2
+
+
+RUN mkdir -p /opt/iotloragateway
+RUN mkdir -p /opt/iotloragateway/dev
+RUN mkdir -p /opt/iotloragateway/packetforwarder
+RUN cd /opt/iotloragateway/dev || exit
+
+RUN git clone https://github.com/NebraLtd/lora_gateway.git
+RUN git clone https://github.com/NebraLtd/packet_forwarder.git
+
 RUN chmod +x ./buildfiles/compileSX1301.sh
 RUN ./buildfiles/compileSX1301.sh spidev0.0
 RUN ./buildfiles/compileSX1301.sh spidev0.1
