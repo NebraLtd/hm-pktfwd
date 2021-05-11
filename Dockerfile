@@ -65,13 +65,10 @@ rm -rf /var/lib/apt/lists/*
 
 COPY --from=buildstep /opt/iotloragateway/packetforwarder .
 COPY lora_templates_sx1301 lora_templates_sx1301/
+RUN wget "https://raw.githubusercontent.com/NebraLtd/helium-hardware-definitions/master/variant_definitions.py"
 
-
-RUN cp lora_templates_sx1301/local_conf.json local_conf.json
-RUN cp lora_templates_sx1301/EU-global_conf.json global_conf.json
-
-RUN chmod 777 ./local_conf.json
-#RUN chmod +x ./packet_forwarder
+#RUN cp lora_templates_sx1301/local_conf.json local_conf.json
+#RUN cp lora_templates_sx1301/EU-global_conf.json global_conf.json
 
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1302
 
