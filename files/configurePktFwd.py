@@ -8,14 +8,15 @@ from shutil import copyfile
 
 from time import sleep
 
-print("Starting pktfwd container")
+print("Starting Packet Forwarder Container")
 
 # Sentry Diagnostics Code
 sentry_key = os.getenv('SENTRY_PKTFWD')
-balena_id = os.getenv('BALENA_DEVICE_UUID')
-balena_app = os.getenv('BALENA_APP_NAME')
-sentry_sdk.init(sentry_key, environment=balena_app)
-sentry_sdk.set_user({"id": balena_id})
+if(sentry_key):
+    balena_id = os.getenv('BALENA_DEVICE_UUID')
+    balena_app = os.getenv('BALENA_APP_NAME')
+    sentry_sdk.init(sentry_key, environment=balena_app)
+    sentry_sdk.set_user({"id": balena_id})
 
 
 with open("/var/pktfwd/diagnostics", 'w') as diagOut:
