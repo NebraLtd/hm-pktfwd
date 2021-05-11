@@ -114,7 +114,7 @@ failTimes = 0
 # Write the correct reset pin to sx1302 reset
 
 gpioResetSED = "sed -i 's/SX1302_RESET_PIN=../SX1302_RESET_PIN=%s/g' reset_lgw.sh" % str(reset_pin)
-subprocess.call(['s/spidev0.0/$1/g'])
+os.system(gpioResetSED)
 
 while True:
 
