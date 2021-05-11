@@ -94,12 +94,19 @@ def writeRegionConfSx1301(regionId):
     with open(globalPath, 'w') as jsonOut:
         json.dump(newGlobal, jsonOut)
 
-def writeRegionConfSx1302(regionId):
+def writeRegionConfSx1302(regionId, spi_bus):
     # Writes the configuration files
-    regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1302/lora_templates_sx1302/"+regionList[regionId]
-    globalPath = "/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/global_conf.json"
+    regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1301/lora_templates_sx1301/"+regionList[regionId]
+    with open(regionconfFile) as regionconfJFile:
+        newGlobal = json.load(regionconfJFile)
 
-    copyfile(regionconfFile,globalPath)
+    # Inject SPI Bus
+    newGlobal['SX130x_conf']['spidev_path']="/dev/%s" % spi_bus
+
+    globalPath = "/opt/iotloragateway/packet_forwarder/sx1301/global_conf.json"
+
+    with open(globalPath, 'w') as jsonOut:
+        json.dump(newGlobal, jsonOut)
 
 # Log the amount of times it has failed starting
 failTimes = 0
@@ -122,7 +129,7 @@ while True:
     if "concentrator EUI:" in euiTest:
         print("SX1302")
         print("Frequency " + regionID)
-        writeRegionConfSx1302(regionID)
+        writeRegionConfSx1302(regionID, spi_bus)
         os.system("/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/lora_pkt_fwd")
         print("Software crashed, restarting")
         failTimes += 1
