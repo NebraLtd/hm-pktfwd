@@ -25,7 +25,18 @@ print("Frequency Checking")
 
 regionID = None
 while(regionID is None):
-    # While no region set
+    # While no region specified
+
+
+    # Otherwise get region from miner
+    try:
+        regionOverride = str(os.environ['REGION_OVERRIDE'])
+        if(regionOverride):
+            regionID = regionOverride
+    except KeyError:
+        print("No Region Override Specified")
+
+    # Check to see if there is a region override
     try:
         with open("/var/pktfwd/region", 'r') as regionOut:
             regionFile = regionOut.read()
@@ -41,12 +52,12 @@ while(regionID is None):
         print("File Not Detected, Sleeping")
         sleep(60)
 
+
 # Start the Module
 
 print("Starting Module")
 
 # regionID = str(os.environ['REGION'])
-# moduleId = 0
 
 print("Sleeping 10 seconds")
 sleep(10)
