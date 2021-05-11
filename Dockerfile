@@ -20,7 +20,14 @@ COPY sx1302fixes sx1302fixes
 
 ARG moo=2
 RUN chmod +x ./buildfiles/compileSX1301.sh
-RUN ./buildfiles/compileSX1301.sh
+RUN ./buildfiles/compileSX1301.sh spidev0.0
+RUN ./buildfiles/compileSX1301.sh spidev0.1
+RUN ./buildfiles/compileSX1301.sh spidev1.0
+RUN ./buildfiles/compileSX1301.sh spidev1.1
+RUN ./buildfiles/compileSX1301.sh spidev1.2
+RUN ./buildfiles/compileSX1301.sh spidev2.0
+RUN ./buildfiles/compileSX1301.sh spidev2.1
+RUN ./buildfiles/compileSX1301.sh spidev32766.0
 
 
 RUN chmod +x ./buildfiles/compileSX1302.sh
