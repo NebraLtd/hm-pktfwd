@@ -11,9 +11,13 @@ from time import sleep
 
 variant = os.getenv('VARIANT')
 variant_variables = variant_definitions[variant]
+# Reset pin is on this GPIO
+reset_pin = variant_variables['RESET']
+# And SPI on this bus
+spi_bus = variant_variables['SPIBUS']
 print("Hardware Variant %s Detected" % variant)
-print("SPI: %s" % variant_variables['SPIBUS'])
-print("RESET: %s" % str(variant_variables['RESET']))
+print("SPI: %s" % reset_pin)
+print("RESET: %s" % str(spi_bus))
 
 print("Starting Packet Forwarder Container")
 
@@ -96,8 +100,7 @@ def writeRegionConfSx1302(regionId):
 
     copyfile(regionconfFile,globalPath)
 
-# If HAT Enabled
-
+# Log the amount of times it has failed starting
 failTimes = 0
 
 while True:
@@ -105,7 +108,7 @@ while True:
     euiTest = os.popen('/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id -d /dev/spidev1.2').read()
 
     print("Starting")
-    reset_pin = 38
+
     subprocess.call(['/opt/iotloragateway/packet_forwarder/reset-v2.sh', str(reset_pin)])
     sleep(2)
 
