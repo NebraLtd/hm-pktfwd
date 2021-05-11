@@ -24,7 +24,7 @@ ARG moo=2
 RUN mkdir -p /opt/iotloragateway
 RUN mkdir -p /opt/iotloragateway/dev
 RUN mkdir -p /opt/iotloragateway/packetforwarder
-RUN cd /opt/iotloragateway/dev || exit
+WORKDIR /opt/iotloragateway/dev
 
 RUN git clone https://github.com/NebraLtd/lora_gateway.git
 RUN git clone https://github.com/NebraLtd/packet_forwarder.git
@@ -63,7 +63,6 @@ rm -rf /var/lib/apt/lists/*
 
 
 COPY --from=buildstep /opt/iotloragateway/packetforwarder .
-
 COPY lora_templates_sx1301 lora_templates_sx1301/
 
 
