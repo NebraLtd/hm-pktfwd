@@ -50,6 +50,7 @@ WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
 
 RUN apt-get update && \
 apt-get -y install \
+wget=1.20.1-1.1 \
 python3=3.7.3-1 \
 python3-rpi.gpio=0.6.5-1 \
 python3-pip=18.1-5 \
