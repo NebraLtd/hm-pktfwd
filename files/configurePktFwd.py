@@ -96,7 +96,7 @@ def writeRegionConfSx1301(regionId):
 
 def writeRegionConfSx1302(regionId, spi_bus):
     # Writes the configuration files
-    regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1301/lora_templates_sx1301/"+regionList[regionId]
+    regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1302/lora_templates_sx1302/"+regionList[regionId]
     with open(regionconfFile) as regionconfJFile:
         newGlobal = json.load(regionconfJFile)
 
