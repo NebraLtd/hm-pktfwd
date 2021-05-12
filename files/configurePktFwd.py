@@ -108,6 +108,7 @@ def writeRegionConfSx1302(regionId, spi_bus):
     with open(globalPath, 'w') as jsonOut:
         json.dump(newGlobal, jsonOut)
 
+
 # Log the amount of times it has failed starting
 failTimes = 0
 
