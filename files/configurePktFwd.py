@@ -45,6 +45,7 @@ while(regionID is None):
         regionOverride = str(os.environ['REGION_OVERRIDE'])
         if(regionOverride):
             regionID = regionOverride
+            break
     except KeyError:
         print("No Region Override Specified")
 
