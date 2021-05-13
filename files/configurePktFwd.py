@@ -4,7 +4,6 @@ import sentry_sdk
 import subprocess
 import os
 import json
-from shutil import copyfile
 from variant_definitions import variant_definitions
 
 from time import sleep
