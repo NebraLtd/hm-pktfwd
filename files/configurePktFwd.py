@@ -103,7 +103,7 @@ def writeRegionConfSx1302(regionId, spi_bus):
     # Inject SPI Bus
     newGlobal['SX130x_conf']['spidev_path']="/dev/%s" % spi_bus
 
-    globalPath = "/opt/iotloragateway/packet_forwarder/sx1301/global_conf.json"
+    globalPath = "/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/global_conf.json"
 
     with open(globalPath, 'w') as jsonOut:
         json.dump(newGlobal, jsonOut)
