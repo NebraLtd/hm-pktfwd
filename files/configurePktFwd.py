@@ -38,7 +38,6 @@ regionID = None
 while(regionID is None):
     # While no region specified
 
-
     # Otherwise get region from miner
     try:
         regionOverride = str(os.environ['REGION_OVERRIDE'])
