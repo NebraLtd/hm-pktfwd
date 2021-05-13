@@ -84,6 +84,7 @@ regionList = {
 
 # Configuration function
 
+
 def writeRegionConfSx1301(regionId):
     regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1301/lora_templates_sx1301/"+regionList[regionId]
     with open(regionconfFile) as regionconfJFile:
@@ -93,6 +94,7 @@ def writeRegionConfSx1301(regionId):
     with open(globalPath, 'w') as jsonOut:
         json.dump(newGlobal, jsonOut)
 
+
 def writeRegionConfSx1302(regionId, spi_bus):
     # Writes the configuration files
     regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1302/lora_templates_sx1302/"+regionList[regionId]
@@ -100,7 +102,7 @@ def writeRegionConfSx1302(regionId, spi_bus):
         newGlobal = json.load(regionconfJFile)
 
     # Inject SPI Bus
-    newGlobal['SX130x_conf']['spidev_path']="/dev/%s" % spi_bus
+    newGlobal['SX130x_conf']['spidev_path'] = "/dev/%s" % spi_bus
 
     globalPath = "/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/global_conf.json"
 
@@ -133,7 +135,6 @@ while True:
         os.system("/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/lora_pkt_fwd")
         print("Software crashed, restarting")
         failTimes += 1
-
 
     else:
         print("SX1301")
