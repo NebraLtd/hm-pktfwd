@@ -55,7 +55,7 @@ python3=3.7.3-1 \
 python3-rpi.gpio=0.6.5-1 \
 python3-pip=18.1-5 \
 --no-install-recommends && \
-pip3 install sentry-sdk==1.1.0 &&\
+pip3 install --no-cache-dir sentry-sdk==1.1.0 &&\
 apt-get purge python3-pip -y &&\
 apt-get autoremove -y &&\
 apt-get clean && \
@@ -93,7 +93,7 @@ RUN chmod +x run_pkt.sh
 RUN chmod +x configurePktFwd.py
 COPY files/reset_lgw.sh .
 RUN chmod +x reset_lgw.sh
-RUN wget "https://raw.githubusercontent.com/NebraLtd/helium-hardware-definitions/master/variant_definitions.py"
+RUN wget -q "https://raw.githubusercontent.com/NebraLtd/helium-hardware-definitions/master/variant_definitions.py"
 
 
 ENTRYPOINT ["sh", "/opt/iotloragateway/packet_forwarder/run_pkt.sh"]
