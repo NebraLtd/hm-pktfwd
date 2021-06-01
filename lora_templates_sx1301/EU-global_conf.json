@@ -79,7 +79,7 @@
 		},
 		"chan_FSK": {
 			"desc": "FSK 50kbps, 868.8 MHz",
-			"enable": true,
+			"enable": false,
 			"radio": 1,
 			"if": 300000,
 			"bandwidth": 125000,
