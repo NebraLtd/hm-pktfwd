@@ -209,11 +209,11 @@
   "ref_latitude": 0,
   "ref_longitude": 0,
   "ref_altitude": 0,
-  
+
   "keepalive_interval": 10,
   "stat_interval": 30,
   "push_timeout_ms": 100,
-  
+
   "forward_crc_valid": true,
   "forward_crc_error": false,
   "forward_crc_disabled": false
