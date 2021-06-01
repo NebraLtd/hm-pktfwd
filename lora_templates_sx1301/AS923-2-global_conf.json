@@ -9,14 +9,14 @@
 			"enable": true,
 			"rssi_target": -80,
 			"chan_cfg":[
-				{ "freq_hz": 923200000, "scan_time_us": 128 },
-				{ "freq_hz": 923400000, "scan_time_us": 128 },
-				{ "freq_hz": 923600000, "scan_time_us": 128 },
-				{ "freq_hz": 923800000, "scan_time_us": 128 },
-				{ "freq_hz": 924000000, "scan_time_us": 128 },
-				{ "freq_hz": 924200000, "scan_time_us": 128 },
-				{ "freq_hz": 924400000, "scan_time_us": 128 },
-				{ "freq_hz": 924600000, "scan_time_us": 128 }
+				{ "freq_hz": 921400000, "scan_time_us": 128 },
+				{ "freq_hz": 921600000, "scan_time_us": 128 },
+				{ "freq_hz": 921800000, "scan_time_us": 128 },
+				{ "freq_hz": 922000000, "scan_time_us": 128 },
+				{ "freq_hz": 922200000, "scan_time_us": 128 },
+				{ "freq_hz": 922400000, "scan_time_us": 128 },
+				{ "freq_hz": 922600000, "scan_time_us": 128 },
+				{ "freq_hz": 922800000, "scan_time_us": 128 }
 			],
 			"sx127x_rssi_offset": -4
 		},
