@@ -72,7 +72,10 @@ sleep(5)
 
 # Region dictionary
 regionList = {
-    "AS923": "AS-global_conf.json",
+    "AS923_1": "AS923-1-global_conf.json",
+    "AS923_2": "AS923-2-global_conf.json",
+    "AS923_3": "AS923-3-global_conf.json",
+    "AS923_4": "AS923-4-global_conf.json",
     "AU915": "AU-global_conf.json",
     "CN470": "CN-global_conf.json",
     "EU868": "EU-global_conf.json",
