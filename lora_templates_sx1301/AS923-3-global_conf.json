@@ -90,7 +90,7 @@
 			"radio": 0,
 			"if": 300000,
 			"bandwidth": 500000,
-			"spread_factor": 7
+			"spread_factor": 8
 		},
 		"chan_FSK": {
 			"desc": "FSK 50kbps, 924.8 MHz",
