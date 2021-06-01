@@ -85,16 +85,16 @@
 			"if": 0
 		},
 		"chan_Lora_std": {
-			"desc": "Lora MAC, 250kHz, SF7, 924.5 MHz",
+			"desc": "Lora MAC, 250kHz, SF7, 923.8 MHz",
 			"enable": true,
-			"radio": 1,
-			"if": -100000,
-			"bandwidth": 250000,
+			"radio": 0,
+			"if": 200000,
+			"bandwidth": 500000,
 			"spread_factor": 7
 		},
 		"chan_FSK": {
 			"desc": "FSK 50kbps, 924.8 MHz",
-			"enable": true,
+			"enable": false,
 			"radio": 1,
 			"if": 200000,
 			"bandwidth": 125000,
