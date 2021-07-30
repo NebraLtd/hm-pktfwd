@@ -15,8 +15,8 @@ reset_pin = variant_variables['RESET']
 # And SPI on this bus
 spi_bus = variant_variables['SPIBUS']
 print("Hardware Variant %s Detected" % variant)
-print("SPI: %s" % reset_pin)
-print("RESET: %s" % str(spi_bus))
+print("RESET: %s" % reset_pin)
+print("SPI: %s" % str(spi_bus))
 
 print("Starting Packet Forwarder Container")
 
