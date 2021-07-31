@@ -13,9 +13,9 @@ variant_variables = variant_definitions[variant]
 # Reset pin is on this GPIO
 reset_pin = variant_variables['RESET']
 # And SPI on this bus
-spi_bus = variant_variables['SPIBUS'] 
-print("Hardware Variant {} detected".format(variant)) 
-print("RESET: {}.".format(reset_pin)) 
+spi_bus = variant_variables['SPIBUS']
+print("Hardware Variant {} detected".format(variant))
+print("RESET: {}.".format(reset_pin))
 print("SPI: {}".format(spi_bus))
 
 # spi_bus = variant_variables['SPIBUS']
