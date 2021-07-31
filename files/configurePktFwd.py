@@ -15,8 +15,15 @@ reset_pin = variant_variables['RESET']
 # And SPI on this bus
 spi_bus = variant_variables['SPIBUS']
 print("Hardware Variant %s Detected" % variant)
-print("RESET: %s" % reset_pin)
-print("SPI: %s" % str(spi_bus))
+print("RESET: %s" % str(reset_pin))
+print("SPI: %s" % spi_bus)
+
+# Check for SPI bus availability
+spiCheck = os.popen('ls /dev | grep -i ' + spi_bus).read()
+if spi_bus in spiCheck:
+    print("SPI bus Configured Correctly")
+else:
+    print("ERROR: SPI bus not found!")
 
 print("Starting Packet Forwarder Container")
 
