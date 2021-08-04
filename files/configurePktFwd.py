@@ -1,10 +1,10 @@
 # Configure Packet Forwarder Program
 # Configures the packet forwarder based on the YAML File and Env Variables
 import sentry_sdk
-import subprocess
+import subprocess  # nosec (B404)
 import os
 import json
-from variant_definitions import variant_definitions
+from lib.variant_definitions import variant_definitions
 
 from time import sleep
 
@@ -15,25 +15,14 @@ reset_pin = variant_variables['RESET']
 # And SPI on this bus
 spi_bus = variant_variables['SPIBUS']
 print("Hardware Variant {} detected".format(variant))
-print("RESET: {}.".format(reset_pin))
+print("RESET: {}".format(reset_pin))
 print("SPI: {}".format(spi_bus))
 
-# spi_bus = variant_variables['SPIBUS']
-# print("Hardware Variant %s Detected" % variant)
-# print("RESET: %s" % str(reset_pin))
-# print("SPI: %s" % spi_bus)
-
 # Check for SPI bus availability
-if os.path.exists('/dev/' + spi_bus):
+if os.path.exists('/dev/{}'.format(spi_bus)):
     print("SPI bus Configured Correctly")
 else:
     print("ERROR: SPI bus not found!")
-
-# spiCheck = os.popen('ls /dev | grep -i ' + spi_bus).read()
-# if spi_bus in spiCheck:
-#    print("SPI bus Configured Correctly")
-# else:
-#    print("ERROR: SPI bus not found!")
 
 print("Starting Packet Forwarder Container")
 
@@ -135,24 +124,24 @@ failTimes = 0
 
 # Write the correct reset pin to sx1302 reset
 
-gpioResetSED = "sed -i 's/SX1302_RESET_PIN=../SX1302_RESET_PIN=%s/g' reset_lgw.sh" % str(reset_pin)
-os.system(gpioResetSED)
+gpioResetSED = "s/SX1302_RESET_PIN=../SX1302_RESET_PIN={}/g".format(reset_pin)
+subprocess.run(["/bin/sed", "-i", gpioResetSED, "/opt/iotloragateway/packet_forwarder/reset_lgw.sh"])  # nosec (B603)
 
 while True:
 
-    euiPATH = '/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id -d /dev/%s' % spi_bus
-    euiTest = os.popen(euiPATH).read()
+    euiPATH = ["/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id", "-d", "/dev/{}".format(spi_bus)]
+    euiTest = subprocess.Popen(euiPATH, stdout=subprocess.PIPE, stderr=None).communicate()  # nosec (B603)
 
     print("Starting")
 
-    subprocess.call(['/opt/iotloragateway/packet_forwarder/reset-v2.sh', str(reset_pin)])
+    subprocess.run(['/opt/iotloragateway/packet_forwarder/reset-v2.sh', str(reset_pin)])  # nosec (B603)
     sleep(2)
 
     if "concentrator EUI:" in euiTest:
         print("SX1302")
         print("Frequency " + regionID)
         writeRegionConfSx1302(regionID, spi_bus)
-        os.system("/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/lora_pkt_fwd")
+        subprocess.run("/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/lora_pkt_fwd")  # nosec (B603)
         print("Software crashed, restarting")
         failTimes += 1
 
@@ -160,7 +149,7 @@ while True:
         print("SX1301")
         print("Frequency " + regionID)
         writeRegionConfSx1301(regionID)
-        os.system("/opt/iotloragateway/packet_forwarder/sx1301/lora_pkt_fwd_%s" % spi_bus)
+        subprocess.run("/opt/iotloragateway/packet_forwarder/sx1301/lora_pkt_fwd_{}".format(spi_bus))  # nosec (B603)
         print("Software crashed, restarting")
         failTimes += 1
 
