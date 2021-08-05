@@ -90,13 +90,6 @@ WORKDIR /opt/iotloragateway/packet_forwarder/sx1302
 # Copy sx1302 hal from builder
 COPY --from=builder /opt/iotloragateway/dev/sx1302_hal-1.0.5 .
 
-# Move to sx1302 chip EUI folder and copy reset script
-WORKDIR /opt/iotloragateway/packet_forwarder/sx1302/util_chip_id
-COPY files/reset_lgw.sh .
-
-# Move to sx1302 main directory
-WORKDIR /opt/iotloragateway/packet_forwarder/sx1302/
-
 # Copy sx1302 regional config templates
 COPY lora_templates_sx1302 lora_templates_sx1302/
 
