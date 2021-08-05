@@ -44,7 +44,7 @@ regionID = None
 while(regionID is None):
     # While no region specified
 
-    # Otherwise get region from miner
+    # Check to see if there is a region override
     try:
         regionOverride = str(os.environ['REGION_OVERRIDE'])
         if(regionOverride):
@@ -53,7 +53,7 @@ while(regionID is None):
     except KeyError:
         print("No Region Override Specified")
 
-    # Check to see if there is a region override
+    # Otherwise get region from miner
     try:
         with open("/var/pktfwd/region", 'r') as regionOut:
             regionFile = regionOut.read()
