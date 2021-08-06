@@ -130,11 +130,10 @@ subprocess.run(["/bin/sed", "-i", gpioResetSED, "/opt/iotloragateway/packet_forw
 while True:
 
     euiPATH = ["/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id", "-d", "/dev/{}".format(spi_bus)]
-    euiTest = subprocess.Popen(euiPATH, stdout=subprocess.PIPE, stderr=None).communicate()  # nosec (B603)
+    euiTest = subprocess.run(euiPATH, capture_output=True, text=True).stdout  # nosec (B603)
 
     print("Starting")
 
-    subprocess.run(['/opt/iotloragateway/packet_forwarder/reset-v2.sh', str(reset_pin)])  # nosec (B603)
     sleep(2)
 
     if "concentrator EUI:" in euiTest:
