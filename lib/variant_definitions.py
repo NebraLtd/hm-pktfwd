@@ -33,7 +33,7 @@ variant_definitions = {
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
-        'BUTTON': 26,
+        'BUTTON': 24,
         'ECCOB': True,
         'TYPE': 'Full'
         },
@@ -46,7 +46,7 @@ variant_definitions = {
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
-        'BUTTON': 26,
+        'BUTTON': 24,
         'ECCOB': True,
         'TYPE': 'Full'
         },
