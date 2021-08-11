@@ -10,6 +10,9 @@ FROM balenalib/raspberry-pi-debian:buster-build as builder
 # Move to correct working directory
 WORKDIR /opt/iotloragateway/dev
 
+# Copy python dependencies for `pip install` later
+COPY requirements.txt requirements.txt
+
 # This will be the path that venv uses for installation below
 ENV PATH="/opt/iotloragateway/dev/venv/bin:$PATH"
 
@@ -31,7 +34,7 @@ RUN \
     # Because the PATH is already updated above, this command creates a new venv AND activates it
     python3 -m venv /opt/iotloragateway/dev/venv && \
     # Given venv is active, this `pip` refers to the python3 variant
-    pip install --no-cache-dir sentry-sdk==1.1.0
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy the buildfiles and sx1302 concentrator fixes
 COPY buildfiles buildfiles
@@ -100,9 +103,6 @@ COPY lora_templates_sx1302/EU-global_conf.json packet_forwarder/global_conf.json
 # Move to main packet forwarder directory and copy source code
 WORKDIR /opt/iotloragateway/packet_forwarder
 COPY files/* .
-
-# Copy lib folder
-COPY lib lib
 
 # Copy venv from builder and update PATH to activate it
 COPY --from=builder /opt/iotloragateway/dev/venv /opt/iotloragateway/dev/venv
