@@ -17,22 +17,22 @@ COPY requirements.txt requirements.txt
 ENV PATH="/opt/iotloragateway/dev/venv/bin:$PATH"
 
 # Install build tools
-RUN \
-    apt-get update && \
-        apt-get -y install \
-            automake \
-            libtool \
-            autoconf \
-            git \
-            ca-certificates \
-            pkg-config \
-            build-essential \
-            python3 \
-            python3-pip \
-            python3-venv \
-            --no-install-recommends && \
+RUN apt-get update && \
+    apt-get -y install --no-install-recommends \
+        automake \
+        libtool \
+        autoconf \
+        git \
+        ca-certificates \
+        pkg-config \
+        build-essential \
+        python3 \
+        python3-pip \
+        python3-venv
+
     # Because the PATH is already updated above, this command creates a new venv AND activates it
     python3 -m venv /opt/iotloragateway/dev/venv && \
+
     # Given venv is active, this `pip` refers to the python3 variant
     pip install --no-cache-dir -r requirements.txt
 
@@ -73,8 +73,8 @@ WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
 # Install python3-venv and python3-rpi.gpio
 RUN apt-get update && \
     apt-get -y install \
-            python3-venv \
-            python3-rpi.gpio &&
+        python3-venv \
+        python3-rpi.gpio && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
