@@ -17,6 +17,7 @@ COPY requirements.txt requirements.txt
 ENV PATH="/opt/iotloragateway/dev/venv/bin:$PATH"
 
 # Install build tools
+# hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \
         automake \
@@ -70,6 +71,7 @@ FROM balenalib/raspberry-pi-debian:buster-run as runner
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
 
 # Install python3-venv and python3-rpi.gpio
+# hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get -y install \
         python3-venv \
