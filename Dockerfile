@@ -31,9 +31,8 @@ RUN apt-get update && \
         python3-venv
 
     # Because the PATH is already updated above, this command creates a new venv AND activates it
-    python3 -m venv /opt/iotloragateway/dev/venv && \
-
     # Given venv is active, this `pip` refers to the python3 variant
+RUN python3 -m venv /opt/iotloragateway/dev/venv && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the buildfiles and sx1302 concentrator fixes
