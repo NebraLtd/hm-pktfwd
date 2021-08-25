@@ -20,16 +20,16 @@ ENV PATH="/opt/iotloragateway/dev/venv/bin:$PATH"
 RUN \
     apt-get update && \
         apt-get -y install \
-            automake=1:1.16.1-4 \
-            libtool=2.4.6-9 \
-            autoconf=2.69-11 \
-            git=1:2.20.1-2+deb10u3 \
-            ca-certificates=20200601~deb10u2 \
-            pkg-config=0.29-6 \
-            build-essential=12.6 \
-            python3=3.7.3-1 \
-            python3-pip=18.1-5+rpt1 \
-            python3-venv=3.7.3-1 \
+            automake \
+            libtool \
+            autoconf \
+            git \
+            ca-certificates \
+            pkg-config \
+            build-essential \
+            python3 \
+            python3-pip \
+            python3-venv \
             --no-install-recommends && \
     # Because the PATH is already updated above, this command creates a new venv AND activates it
     python3 -m venv /opt/iotloragateway/dev/venv && \
@@ -71,11 +71,13 @@ FROM balenalib/raspberry-pi-debian:buster-run as runner
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
 
 # Install python3-venv and python3-rpi.gpio
-RUN \
-    apt-get update && \
-        apt-get -y install \
-            python3-venv=3.7.3-1 \
-            python3-rpi.gpio=0.7.0-0.1~bpo10+4
+RUN apt-get update && \
+    apt-get -y install \
+            python3-venv \
+            python3-rpi.gpio &&
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy sx1301 packetforwader from builder
 COPY --from=builder /opt/iotloragateway/packetforwarder .
@@ -107,11 +109,6 @@ COPY files/* .
 # Copy venv from builder and update PATH to activate it
 COPY --from=builder /opt/iotloragateway/dev/venv /opt/iotloragateway/dev/venv
 ENV PATH="/opt/iotloragateway/dev/venv/bin:$PATH"
-
-# Cleanup
-RUN apt-get autoremove -y &&\
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 
 # Run run_pkt script
 ENTRYPOINT ["sh", "/opt/iotloragateway/packet_forwarder/run_pkt.sh"]
