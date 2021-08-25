@@ -16,6 +16,7 @@ You can typically find the exact region plan you need to use at [What Helium Reg
 | AU915 | Australia, New Zealand and South America|
 | CN470 | China |
 | EU868 | Europe, Middle East and some of Africa |
+| EU433 | Parts of Africa and Asia|
 | IN865 | India and Pakistan |
 | KR920 | South Korea |
 | RU864 | Russia |
@@ -24,4 +25,4 @@ You can typically find the exact region plan you need to use at [What Helium Reg
 Please note:
 | Region Plan | Region |
 | --- | --- |
-| EU433 | NOT YET SUPPORTED |
+| CN779 | NOT YET SUPPORTED |
