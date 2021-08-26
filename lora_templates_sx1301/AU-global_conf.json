@@ -72,7 +72,7 @@
 		"chan_Lora_std": {
 			"desc": "Lora MAC, 500kHz, SF8, 918.2 MHz",
 			"enable": true,
-			"radio": 0,
+			"radio": 1,
 			"if": 400000,
 			"bandwidth": 500000,
 			"spread_factor": 8
