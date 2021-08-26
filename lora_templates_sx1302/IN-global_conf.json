@@ -1,14 +1,14 @@
 {
   "SX130x_conf": {
-      "spidev_path": "/dev/spidev1.2",
+      "com_type": "SPI",
+      "com_path": "/dev/spidev1.2",
       "lorawan_public": true,
       "clksrc": 0,
       "antenna_gain": 0,
       "full_duplex": false,
-      "precision_timestamp": {
+      "fine_timestamp": {
           "enable": false,
-          "max_ts_metrics": 255,
-          "nb_symbols": 1
+          "mode": "all_sf"
       },
       "radio_0": {
           "enable": true,
