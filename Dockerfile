@@ -105,7 +105,7 @@ COPY lora_templates_sx1302/EU-global_conf.json packet_forwarder/global_conf.json
 
 # Move to main packet forwarder directory and copy source code
 WORKDIR /opt/iotloragateway/packet_forwarder
-COPY files/* .
+COPY pktfwd/* .
 
 # Copy venv from builder and update PATH to activate it
 COPY --from=builder /opt/iotloragateway/dev/venv /opt/iotloragateway/dev/venv
