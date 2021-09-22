@@ -4,7 +4,7 @@ import sentry_sdk
 import subprocess  # nosec (B404)
 import os
 import json
-from hm_hardware_defs.variant import variant_definitions
+from hm_pyhelper.hardware_definitions import variant_definitions
 
 from time import sleep
 
