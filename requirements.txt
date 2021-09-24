@@ -1,2 +1,1 @@
 sentry-sdk==1.1.0
-hm-hardware-defs==0.1.6a3

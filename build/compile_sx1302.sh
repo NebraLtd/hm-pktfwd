@@ -2,7 +2,6 @@
 
 cd /opt/iotloragateway/dev || exit
 
-#git clone https://github.com/NebraLtd/sx1302_hal.git
 wget https://github.com/NebraLtd/sx1302_hal/archive/V1.0.5.tar.gz
 tar -xzvf V1.0.5.tar.gz
 
