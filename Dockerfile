@@ -7,7 +7,20 @@
 FROM balenalib/raspberry-pi-debian:buster-build as builder
 
 ENV BUILD_INPUTS_PATH=/opt/build
-ENV BUILD_OUTPUT_PATH=/opt/packet_forwarder
+ENV BUILD_INPUT_PKTFWD_APP_PATH="$BUILD_INPUTS_PATH/pktfwd"
+ENV BUILD_INPUT_SX1301_CONFIG_PATH="$BUILD_INPUTS_PATH/pktfwd/config/lora_templates_sx1301"
+# TODO switch back to EU default
+ENV BUILD_INPUT_SX1301_GLOBAL_CONFIG_FILENAME="US-global_conf.json"
+ENV BUILD_INPUT_UPSTREAM_LORA_GATEWAY_PATH="$BUILD_INPUTS_PATH/lora_gateway"
+ENV BUILD_INPUT_UPSTREAM_PACKET_FORWARDER_PATH="$BUILD_INPUTS_PATH/packet_forwarder"
+
+ENV BUILD_OUTPUTS_PATH=/opt/packet_forwarder
+ENV BUILD_OUTPUT_SX1301_PATH="$BUILD_OUTPUTS_PATH/sx1301"
+
+# Script that reads from $BUILD_INPUTS_PATH and exports to BUILD_OUTPUT_PATH
+ENV BUILD_SCRIPT_PATH="$BUILD_INPUTS_PATH/build_all_sx130x_variants.sh"
+
+ENV DEBUG_HAL=1
 
 # Move to correct working directory
 WORKDIR "$BUILD_INPUTS_PATH"
@@ -33,10 +46,10 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Copy the upstream code, build files, and sx1302 fixes
 COPY build/ "$BUILD_INPUTS_PATH/"
-COPY pktfwd/ "$BUILD_INPUTS_PATH/pktfwd/"
+COPY pktfwd/ "$BUILD_INPUT_PKTFWD_APP_PATH/"
 
 # Installs to /opt/packet_forwarder
-RUN "$BUILD_INPUTS_PATH/build_all_sx130x_variants.sh"
+RUN "$BUILD_SCRIPT_PATH"
 
 # No need to cleanup the builder
 

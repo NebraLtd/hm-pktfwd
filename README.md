@@ -25,3 +25,10 @@ Please note:
 | Region Plan | Region |
 | --- | --- |
 | EU433 | NOT YET SUPPORTED |
+
+
+Upstream:
+https://github.com/Lora-net/lora_gateway/tree/master/libloragw
+https://github.com/Lora-net/packet_forwarder
+
+git clone --recurse-submodules

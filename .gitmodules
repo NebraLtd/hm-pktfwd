@@ -1,6 +1,6 @@
 [submodule "build/packet_forwarder"]
 	path = build/packet_forwarder
-	url = git@github.com:NebraLtd/packet_forwarder.git
+	url = https://github.com/NebraLtd/packet_forwarder.git
 [submodule "build/lora_gateway"]
 	path = build/lora_gateway
-	url = git@github.com:NebraLtd/packet_forwarder.git
+	url = https://github.com/NebraLtd/lora_gateway.git

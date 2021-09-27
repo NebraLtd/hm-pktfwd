@@ -1,11 +1,49 @@
-print("TODO")
+from hm_pyhelper.hardware_definitions import variant_definitions
+import logging
+# TODO import from pyhelper instead
+import os
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 
-def start():
-    print("STARTING")
+REGION_CONFIG_FILENAMES = {
+    "AS923_1": "AS923-1-global_conf.json",
+    "AS923_2": "AS923-2-global_conf.json",
+    "AS923_3": "AS923-3-global_conf.json",
+    "AS923_4": "AS923-4-global_conf.json",
+    "AU915": "AU-global_conf.json",
+    "CN470": "CN-global_conf.json",
+    "EU433": "EU433-global_conf.json",
+    "EU868": "EU-global_conf.json",
+    "IN865": "IN-global_conf.json",
+    "KR920": "KR-global_conf.json",
+    "RU864": "RU-global_conf.json",
+    "US915": "US-global_conf.json"
+}
 
-def stop():
-    print("STOPPING")
-    
+class PktfwdApp:
+    def __init__(self, variant, region_configs_path, region_override):
+        self.set_variant_attributes(variant)
+        self.region_configs_path = region_configs_path
+        self.set_region(region_override)
+
+    def start(self):
+        logging.debug("STARTING")
+
+    def stop(self):
+        logging.debug("STOPPING")
+
+    def set_variant_attributes(self, variant):
+        self.variant = variant
+        self.variant_attributes = variant_definitions[self.variant]
+        self.reset_pin = self.variant_attributes['RESET']
+        # TODO fix the variant definition for rockpi
+        self.spi_bus = "spidev32766.0"
+        # self.spi_bus = self.variant_attributes['SPIBUS']
+        logging.debug("Variant %s set with reset_pin %s and spi_bus %s" % 
+            (self.variant, self.reset_pin, self.spi_bus))
+
+    def set_region(self, region_override):
+        self.region = region_override
+        logging.debug("Region set to %s" % self.region)
 # Configure Packet Forwarder Program
 # Configures the packet forwarder based on the YAML File and Env Variables
 # import sentry_sdk
