@@ -45,6 +45,7 @@ RUN "$BUILD_INPUTS_PATH/build_all_sx130x_variants.sh"
 
 FROM balenalib/raspberry-pi-debian:buster-run as runner
 
+ENV BUILD_OUTPUT_PATH=/opt/packet_forwarder
 WORKDIR /opt/
 
 # hadolint ignore=DL3008
@@ -63,4 +64,5 @@ COPY --from=builder "$BUILD_OUTPUT_PATH" "$BUILD_OUTPUT_PATH"
 
 # Run run_pkt script
 # ENTRYPOINT ["python3", "/opt/pktfwd"]
-ENTRYPOINT ["/bin/bash"]
+# ENTRYPOINT ["/bin/bash"]
+CMD while true; do sleep 1000; done

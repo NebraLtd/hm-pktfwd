@@ -19,8 +19,12 @@ compile_upstream_libs() {
 
 copy_default_configs() {
     # Place default configs and use EU as initial default
-    cp "$BUILD_INPUTS_PATH/pktfwd/config/lora_templates_sx1301/local_conf.json" "$BUILD_OUTPUT_PATH/sx1301/local_conf.json"
-    cp "$BUILD_INPUTS_PATH/pktfwd/config/lora_templates_sx1301/EU-global_conf.json" "$BUILD_OUTPUT_PATH/sx1301/global_conf.json"
+    output_path_sx1301="$BUILD_OUTPUT_PATH/sx1301"
+    echo "Copying configs from $BUILD_INPUTS_PATH/pktfwd/config/lora_templates_sx1301/"
+    echo "To $output_path_sx1301"
+    mkdir -p "$output_path_sx1301"
+    cp "$BUILD_INPUTS_PATH/pktfwd/config/lora_templates_sx1301/local_conf.json" "$output_path_sx1301/local_conf.json"
+    cp "$BUILD_INPUTS_PATH/pktfwd/config/lora_templates_sx1301/EU-global_conf.json" "$output_path_sx1301/global_conf.json"
 
     # Copy sx1302 hal from builder
 
@@ -45,8 +49,6 @@ perform_build() {
 }
 
 
-
-
-
+perform_build
 
 
