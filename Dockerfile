@@ -20,8 +20,6 @@ ENV BUILD_OUTPUT_SX1301_PATH="$BUILD_OUTPUTS_PATH/sx1301"
 # Script that reads from $BUILD_INPUTS_PATH and exports to BUILD_OUTPUT_PATH
 ENV BUILD_SCRIPT_PATH="$BUILD_INPUTS_PATH/build_all_sx130x_variants.sh"
 
-ENV DEBUG_HAL=1
-
 # Move to correct working directory
 WORKDIR "$BUILD_INPUTS_PATH"
 
@@ -57,7 +55,6 @@ RUN "$BUILD_SCRIPT_PATH"
 ################################### Stage: runner ##################################################
 
 FROM balenalib/raspberry-pi-debian:buster-build as runner
-ENV DEBUG_HAL=1
 ENV BUILD_OUTPUT_PATH=/opt/packet_forwarder
 WORKDIR /opt/
 
