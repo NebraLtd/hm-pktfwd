@@ -33,13 +33,13 @@ compile_sx1301() {
 # Build the upstream packet_frowarder for all spi interfaces on sx1301
 compile_upstream_libs() {
     echo "Compiling for sx1301 concentrator on all the necessary SPI buses to $BUILD_OUTPUT_SX1301_PATH"
-    # RUN ./buildfiles/compile_sx1301.sh spidev0.0
-    # RUN ./buildfiles/compile_sx1301.sh spidev0.1
-    # RUN ./buildfiles/compile_sx1301.sh spidev1.0
-    # RUN ./buildfiles/compile_sx1301.sh spidev1.1
-    # RUN ./buildfiles/compile_sx1301.sh spidev1.2
-    # RUN ./buildfiles/compile_sx1301.sh spidev2.0
-    # RUN ./buildfiles/compile_sx1301.sh spidev2.1
+    compile_sx1301 spidev0.0
+    compile_sx1301 spidev0.1
+    compile_sx1301 spidev1.0
+    compile_sx1301 spidev1.1
+    compile_sx1301 spidev1.2
+    compile_sx1301 spidev2.0
+    compile_sx1301 spidev2.1
     compile_sx1301 spidev32766.0
 
     # Compile for sx1302 concentrator

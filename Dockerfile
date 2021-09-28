@@ -56,8 +56,8 @@ RUN "$BUILD_SCRIPT_PATH"
 ####################################################################################################
 ################################### Stage: runner ##################################################
 
-FROM balenalib/raspberry-pi-debian:buster-run as runner
-
+FROM balenalib/raspberry-pi-debian:buster-build as runner
+ENV DEBUG_HAL=1
 ENV BUILD_OUTPUT_PATH=/opt/packet_forwarder
 WORKDIR /opt/
 
