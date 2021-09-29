@@ -74,8 +74,7 @@ WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
 # hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get -y install \
-        python3-venv \
-        python3-rpi.gpio && \
+        python3-venv && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
