@@ -5,7 +5,7 @@
 ####################################################################################################
 ################################## Stage: builder ##################################################
 
-FROM balenalib/raspberry-pi-debian:buster-build as builder
+FROM balenalib/genericx86-64-ext-debian:buster-build as builder
 
 # Move to correct working directory
 WORKDIR /opt/iotloragateway/dev
@@ -65,7 +65,7 @@ RUN ./buildfiles/compileSX1302.sh
 ####################################################################################################
 ################################### Stage: runner ##################################################
 
-FROM balenalib/raspberry-pi-debian:buster-run as runner
+FROM balenalib/genericx86-64-ext-debian:buster-run as runner
 
 # Start in sx1301 directory
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
