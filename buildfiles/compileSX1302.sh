@@ -2,16 +2,17 @@
 
 cd /opt/iotloragateway/dev || exit
 
-#git clone https://github.com/NebraLtd/sx1302_hal.git
-wget https://github.com/NebraLtd/sx1302_hal/archive/V1.0.5.tar.gz
-tar -xzvf V1.0.5.tar.gz
+wget https://github.com/NebraLtd/sx1302_hal/archive/V2.1.0.tar.gz
+tar -xzvf V2.1.0.tar.gz
 
-cd /opt/iotloragateway/dev/sx1302_hal-1.0.5 || exit
+cd /opt/iotloragateway/dev/sx1302_hal-2.1.0 || exit
 
 #Remove old files
 
 rm libloragw/inc/loragw_stts751.h -f
 rm libloragw/src/loragw_stts751.c -f
+rm libloragw/inc/loragw_ad5338r.h -f
+rm libloragw/src/loragw_ad5338r.c -f
 
 #Copy new files
 cp ../sx1302fixes/loragw_hal.c libloragw/src/loragw_hal.c -f

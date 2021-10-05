@@ -29,11 +29,10 @@ RUN apt-get update && \
         build-essential \
         python3 \
         python3-pip \
-        python3-venv
-
+        python3-venv && \
     # Because the PATH is already updated above, this command creates a new venv AND activates it
+    python3 -m venv /opt/iotloragateway/dev/venv && \
     # Given venv is active, this `pip` refers to the python3 variant
-RUN python3 -m venv /opt/iotloragateway/dev/venv && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the buildfiles and sx1302 concentrator fixes
@@ -94,7 +93,7 @@ COPY lora_templates_sx1301/EU-global_conf.json global_conf.json
 WORKDIR /opt/iotloragateway/packet_forwarder/sx1302
 
 # Copy sx1302 hal from builder
-COPY --from=builder /opt/iotloragateway/dev/sx1302_hal-1.0.5 .
+COPY --from=builder /opt/iotloragateway/dev/sx1302_hal-2.1.0 .
 
 # Copy sx1302 regional config templates
 COPY lora_templates_sx1302 lora_templates_sx1302/

@@ -112,7 +112,7 @@ def writeRegionConfSx1302(regionId, spi_bus):
         newGlobal = json.load(regionconfJFile)
 
     # Inject SPI Bus
-    newGlobal['SX130x_conf']['spidev_path'] = "/dev/%s" % spi_bus
+    newGlobal['SX130x_conf']['com_path'] = "/dev/%s" % spi_bus
 
     globalPath = "/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/global_conf.json"
 
