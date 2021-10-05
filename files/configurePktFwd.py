@@ -4,7 +4,7 @@ import sentry_sdk
 import subprocess  # nosec (B404)
 import os
 import json
-from hm_hardware_defs.variant import variant_definitions
+from hm_pyhelper.hardware_definitions import variant_definitions
 
 from time import sleep
 
@@ -84,6 +84,7 @@ regionList = {
     "AS923_4": "AS923-4-global_conf.json",
     "AU915": "AU-global_conf.json",
     "CN470": "CN-global_conf.json",
+    "EU433": "EU433-global_conf.json",
     "EU868": "EU-global_conf.json",
     "IN865": "IN-global_conf.json",
     "KR920": "KR-global_conf.json",
