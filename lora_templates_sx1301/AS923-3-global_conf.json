@@ -5,21 +5,6 @@
 		"clksrc_desc": "radio_1 provides clock to concentrator for most devices except MultiTech. For MultiTech set to 0.",
 		"antenna_gain": 0,
 		"antenna_gain_desc": "antenna gain, in dBi",
-		"lbt_cfg": {
-			"enable": true,
-			"rssi_target": -80,
-			"chan_cfg":[
-				{ "freq_hz": 916600000, "scan_time_us": 128 },
-				{ "freq_hz": 916800000, "scan_time_us": 128 },
-				{ "freq_hz": 917000000, "scan_time_us": 128 },
-				{ "freq_hz": 917200000, "scan_time_us": 128 },
-				{ "freq_hz": 917400000, "scan_time_us": 128 },
-				{ "freq_hz": 917600000, "scan_time_us": 128 },
-				{ "freq_hz": 917800000, "scan_time_us": 128 },
-				{ "freq_hz": 918000000, "scan_time_us": 128 }
-			],
-			"sx127x_rssi_offset": -4
-		},
 		"radio_0": {
 			"enable": true,
 			"type": "SX1257",
