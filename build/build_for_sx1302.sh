@@ -9,30 +9,36 @@
 # https://github.com/Lora-net/packet_forwarder/blob/d0226eae6e7b6bbaec6117d0d2372bf17819c438/lora_pkt_fwd/Makefile#L7
 compile_sx1301() {
     spi_bus="$1"
-
     echo "Compiling upstream lora_gateway/libloragw for $spi_bus"
-    cd "$BUILD_INPUT_UPSTREAM_LORA_GATEWAY_PATH/libloragw" || exit
-    rm src/loragw_spi.native.c
-    cp src/loragw_spi.native.c.template src/loragw_spi.native.c
-    sed -i "s|spidev0.0|$spi_bus|g" src/loragw_spi.native.c
+
+    cd "$INPUT_UPSTREAM_LORA_GATEWAY_PATH/libloragw" || exit
+    export SPI_DEV_PATH="/dev/$spi_bus"
+    # sed -i "s|spidev0.0|$spi_bus|g" src/loragw_spi.native.c
     make clean
     make -j 4
 
     echo "Compiling upstream packet_forwarder/lora_pkt_fwd for $spi_bus"
-    cd "$BUILD_INPUT_UPSTREAM_PACKET_FORWARDER_PATH" || exit
+    cd "$INPUT_UPSTREAM_PACKET_FORWARDER_PATH" || exit
     # Point the configs to the output path
-    sed -i "s|/opt/iotloragateway/packet_forwarder/sx1301|$BUILD_OUTPUT_SX1301_PATH|g" lora_pkt_fwd/src/lora_pkt_fwd.c
+    # sed -i "s|/opt/iotloragateway/packet_forwarder/sx1301|$OUTPUT_SX1301_PATH|g" lora_pkt_fwd/src/lora_pkt_fwd.c
    
     make clean
     make -j 4
 
-    cp -R "$BUILD_INPUT_UPSTREAM_PACKET_FORWARDER_PATH/lora_pkt_fwd/lora_pkt_fwd" "$BUILD_OUTPUT_SX1301_PATH/lora_pkt_fwd_$spi_bus"
-    echo "Finished building sx1301 for $spi_bus to $BUILD_OUTPUT_SX1301_PATH"
+    cp -R "$INPUT_UPSTREAM_PACKET_FORWARDER_PATH/lora_pkt_fwd/lora_pkt_fwd" "$OUTPUT_SX1301_PATH/lora_pkt_fwd_$spi_bus"
+    echo "Finished building sx1301 for $spi_bus to $OUTPUT_SX1301_PATH"
 }
 
 # Build the upstream packet_frowarder for all spi interfaces on sx1301
 compile_upstream_libs() {
-    echo "Compiling for sx1301 concentrator on all the necessary SPI buses to $BUILD_OUTPUT_SX1301_PATH"
+    echo "Compiling for sx1301 concentrator on all the necessary SPI buses to $OUTPUT_SX1301_PATH"
+    spi_buses=(spidev0.0 spidev0.1 spidev1.0 spidev1.1 spidev1.2 spidev2.0 spidev2.1 spidev032766.0)
+
+    for spi_bus in "${spi_buses[@]}"
+    do
+    : 
+        compile_sx1301 "$spi_bus"
+    done
     # compile_sx1301 spidev0.0
     # compile_sx1301 spidev0.1
     # compile_sx1301 spidev1.0
@@ -40,7 +46,7 @@ compile_upstream_libs() {
     # compile_sx1301 spidev1.2
     # compile_sx1301 spidev2.0
     # compile_sx1301 spidev2.1
-    compile_sx1301 spidev32766.0
+    # compile_sx1301 spidev32766.0
 
     # Compile for sx1302 concentrator
     # RUN ./buildfiles/compile_sx1302.sh
@@ -81,4 +87,4 @@ perform_build() {
 }
 
 
-perform_build
+# perform_build

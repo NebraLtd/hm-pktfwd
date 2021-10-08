@@ -1,205 +1,73 @@
 from hm_pyhelper.hardware_definitions import variant_definitions
-import logging
-# TODO import from pyhelper instead
-import os
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 
-REGION_CONFIG_FILENAMES = {
-    "AS923_1": "AS923-1-global_conf.json",
-    "AS923_2": "AS923-2-global_conf.json",
-    "AS923_3": "AS923-3-global_conf.json",
-    "AS923_4": "AS923-4-global_conf.json",
-    "AU915": "AU-global_conf.json",
-    "CN470": "CN-global_conf.json",
-    "EU433": "EU433-global_conf.json",
-    "EU868": "EU-global_conf.json",
-    "IN865": "IN-global_conf.json",
-    "KR920": "KR-global_conf.json",
-    "RU864": "RU-global_conf.json",
-    "US915": "US-global_conf.json"
-}
+from pktfwd.utils import init_sentry, is_concentrator_sx1302, update_global_conf, \
+                        write_diagnostics, await_system_ready, run_reset_lgw, \
+                        retry_start_concentrator
+from hm_pyhelper.logger import get_logger
+from hm_pyhelper.miner_params import retry_get_region, await_spi_available
+
+
+LOGGER = get_logger(__name__)
+
 
 class PktfwdApp:
-    def __init__(self, variant, region_configs_path, region_override):
+    def __init__(self, variant, region_override, region_filepath, sx1301_region_configs_path, 
+                sx1302_region_configs_path, sentry_key, 
+                balena_id, balena_app, diagnostics_filepath, await_system_sleep_seconds,
+                reset_lgw_filepath, reset_lgw_pin_envvar, util_chip_id_filepath, 
+                sx1302_lora_pkt_fwd_filepath, sx1301_lora_pkt_fwd_dir):
+        
+        init_sentry(sentry_key, balena_id, balena_app)
         self.set_variant_attributes(variant)
-        self.region_configs_path = region_configs_path
-        self.set_region(region_override)
+        self.sx1301_region_configs_path = sx1301_region_configs_path
+        self.sx1302_region_configs_path = sx1302_region_configs_path
+        self.region_override = region_override
+        self.region_filepath = region_filepath
+        self.diagnostics_filepath = diagnostics_filepath
+        self.await_system_sleep_seconds = await_system_sleep_seconds
+        self.reset_lgw_filepath = reset_lgw_filepath
+        self.reset_lgw_pin_envvar = reset_lgw_pin_envvar
+        self.util_chip_id_filepath = util_chip_id_filepath
+        self.sx1301_lora_pkt_fwd_dir = sx1301_lora_pkt_fwd_dir
+        self.sx1302_lora_pkt_fwd_filepath = sx1302_lora_pkt_fwd_filepath
+
 
     def start(self):
-        logging.debug("STARTING")
+        LOGGER.debug("STARTING")
+        self.prepare_to_start()
+
+        is_sx1302 = is_concentrator_sx1302(self.util_chip_id_filepath, self.spi_bus)
+        update_global_conf(is_sx1302, self.sx1301_region_configs_path, self.sx1302_region_configs_path, self.region, self.spi_bus)
+        retry_start_concentrator(is_sx1302, self.spi_bus, self.sx1302_lora_pkt_fwd_filepath, self.sx1301_lora_pkt_fwd_dir,
+                                self.reset_lgw_filepath, self.reset_lgw_pin_envvar, self.reset_pin)
+
+        # retry_start_concentrator will hang indefinitely while it runs. The lines below will only be
+        # reached if the concentrator fails to start.
+        LOGGER.error("Unable to start concentrator. Shutting down.")
+        self.stop()
+
+
+    def prepare_to_start(self):
+        write_diagnostics(self.diagnostics_filepath, True)
+        await_spi_available(self.spi_bus)
+
+        self.region = retry_get_region(self.region_override, self.region_filepath)
+        LOGGER.debug("Region set to %s" % self.region)
+
+        run_reset_lgw(self.reset_lgw_filepath, self.reset_lgw_pin_envvar, self.reset_pin)
+        await_system_ready(self.await_system_sleep_seconds)
+        LOGGER.debug("Finished preparing pktfwd")
+
 
     def stop(self):
-        logging.debug("STOPPING")
+        LOGGER.debug("STOPPING")
+        write_diagnostics(self.diagnostics_filepath, False)
+
 
     def set_variant_attributes(self, variant):
         self.variant = variant
         self.variant_attributes = variant_definitions[self.variant]
         self.reset_pin = self.variant_attributes['RESET']
-        # TODO fix the variant definition for rockpi
-        self.spi_bus = "spidev32766.0"
-        # self.spi_bus = self.variant_attributes['SPIBUS']
-        logging.debug("Variant %s set with reset_pin %s and spi_bus %s" % 
+        self.spi_bus = self.variant_attributes['SPIBUS']
+        LOGGER.debug("Variant %s set with reset_pin %s and spi_bus %s" % 
             (self.variant, self.reset_pin, self.spi_bus))
-
-    def set_region(self, region_override):
-        self.region = region_override
-        logging.debug("Region set to %s" % self.region)
-# Configure Packet Forwarder Program
-# Configures the packet forwarder based on the YAML File and Env Variables
-# import sentry_sdk
-# import subprocess  # nosec (B404)
-# import os
-# import json
-# from hm_hardware_defs.variant import variant_definitions
-
-# from time import sleep
-
-# variant = os.getenv('VARIANT')
-# variant_variables = variant_definitions[variant]
-# # Reset pin is on this GPIO
-# reset_pin = variant_variables['RESET']
-# # And SPI on this bus
-# spi_bus = variant_variables['SPIBUS']
-# print("Hardware Variant {} detected".format(variant))
-# print("RESET: {}".format(reset_pin))
-# print("SPI: {}".format(spi_bus))
-
-# # Check for SPI bus availability
-# if os.path.exists('/dev/{}'.format(spi_bus)):
-#     print("SPI bus Configured Correctly")
-# else:
-#     print("ERROR: SPI bus not found!")
-
-# print("Starting Packet Forwarder Container")
-
-# # Sentry Diagnostics Code
-# sentry_key = os.getenv('SENTRY_PKTFWD')
-# if(sentry_key):
-#     balena_id = os.getenv('BALENA_DEVICE_UUID')
-#     balena_app = os.getenv('BALENA_APP_NAME')
-#     sentry_sdk.init(sentry_key, environment=balena_app)
-#     sentry_sdk.set_user({"id": balena_id})
-
-
-# with open("/var/pktfwd/diagnostics", 'w') as diagOut:
-#     diagOut.write("true")
-
-# print("Frequency Checking")
-
-# regionID = None
-# while(regionID is None):
-#     # While no region specified
-
-#     # Check to see if there is a region override
-#     try:
-#         regionOverride = str(os.environ['REGION_OVERRIDE'])
-#         if(regionOverride):
-#             regionID = regionOverride
-#             break
-#     except KeyError:
-#         print("No Region Override Specified")
-
-#     # Otherwise get region from miner
-#     try:
-#         with open("/var/pktfwd/region", 'r') as regionOut:
-#             regionFile = regionOut.read()
-
-#             if(len(regionFile) > 3):
-#                 print("Frequency: " + str(regionFile))
-#                 regionID = str(regionFile).rstrip('\n')
-#                 break
-#         print("Invalid Contents")
-#         sleep(30)
-#         print("Try loop again")
-#     except FileNotFoundError:
-#         print("File Not Detected, Sleeping")
-#         sleep(60)
-
-
-# # Start the Module
-
-# print("Starting Module")
-# print("Sleeping 5 seconds")
-# sleep(5)
-
-# # Region dictionary
-# regionList = {
-#     "AS923_1": "AS923-1-global_conf.json",
-#     "AS923_2": "AS923-2-global_conf.json",
-#     "AS923_3": "AS923-3-global_conf.json",
-#     "AS923_4": "AS923-4-global_conf.json",
-#     "AU915": "AU-global_conf.json",
-#     "CN470": "CN-global_conf.json",
-#     "EU868": "EU-global_conf.json",
-#     "IN865": "IN-global_conf.json",
-#     "KR920": "KR-global_conf.json",
-#     "RU864": "RU-global_conf.json",
-#     "US915": "US-global_conf.json"
-# }
-
-# # Configuration function
-
-
-# def writeRegionConfSx1301(regionId):
-#     regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1301/lora_templates_sx1301/"+regionList[regionId]
-#     with open(regionconfFile) as regionconfJFile:
-#         newGlobal = json.load(regionconfJFile)
-#     globalPath = "/opt/iotloragateway/packet_forwarder/sx1301/global_conf.json"
-
-#     with open(globalPath, 'w') as jsonOut:
-#         json.dump(newGlobal, jsonOut)
-
-
-# def writeRegionConfSx1302(regionId, spi_bus):
-#     # Writes the configuration files
-#     regionconfFile = "/opt/iotloragateway/packet_forwarder/sx1302/lora_templates_sx1302/"+regionList[regionId]
-#     with open(regionconfFile) as regionconfJFile:
-#         newGlobal = json.load(regionconfJFile)
-
-#     # Inject SPI Bus
-#     newGlobal['SX130x_conf']['spidev_path'] = "/dev/%s" % spi_bus
-
-#     globalPath = "/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/global_conf.json"
-
-#     with open(globalPath, 'w') as jsonOut:
-#         json.dump(newGlobal, jsonOut)
-
-
-# # Log the amount of times it has failed starting
-# failTimes = 0
-
-# # Write the correct reset pin to sx1302 reset
-
-# gpioResetSED = "s/SX1302_RESET_PIN=../SX1302_RESET_PIN={}/g".format(reset_pin)
-# subprocess.run(["/bin/sed", "-i", gpioResetSED, "/opt/iotloragateway/packet_forwarder/reset_lgw.sh"])  # nosec (B603)
-
-# while True:
-
-#     euiPATH = ["/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id", "-d", "/dev/{}".format(spi_bus)]
-#     euiTest = subprocess.run(euiPATH, capture_output=True, text=True).stdout  # nosec (B603)
-
-#     print("Starting")
-
-#     sleep(2)
-
-#     if "concentrator EUI:" in euiTest:
-#         print("SX1302")
-#         print("Frequency " + regionID)
-#         writeRegionConfSx1302(regionID, spi_bus)
-#         subprocess.run("/opt/iotloragateway/packet_forwarder/sx1302/packet_forwarder/lora_pkt_fwd")  # nosec (B603)
-#         print("Software crashed, restarting")
-#         failTimes += 1
-
-#     else:
-#         print("SX1301")
-#         print("Frequency " + regionID)
-#         writeRegionConfSx1301(regionID)
-#         subprocess.run("/opt/iotloragateway/packet_forwarder/sx1301/lora_pkt_fwd_{}".format(spi_bus))  # nosec (B603)
-#         print("Software crashed, restarting")
-#         failTimes += 1
-
-#     if(failTimes == 5):
-#         with open("/var/pktfwd/diagnostics", 'w') as diagOut:
-#             diagOut.write("false")
-
-# Sleep forever

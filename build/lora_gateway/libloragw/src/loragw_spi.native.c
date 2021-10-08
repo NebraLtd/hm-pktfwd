@@ -54,8 +54,8 @@ Maintainer: Sylvain Miermont
 #define READ_ACCESS     0x00
 #define WRITE_ACCESS    0x80
 #define SPI_SPEED       2000000
-#define SPI_DEV_PATH    "/dev/spidev0.0"
-//#define SPI_DEV_PATH    "/dev/spidev32766.0"
+// SPI_DEV_PATH is now set at build time based on the SPI_DEV_PATH environment variable
+// #define SPI_DEV_PATH    "/dev/spidev0.0"
 
 /* -------------------------------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS DEFINITION ------------------------------------------ */
