@@ -26,3 +26,11 @@ Please note:
 | Region Plan | Region |
 | --- | --- |
 | CN779 | NOT YET SUPPORTED |
+
+## Pre built containers
+
+This repo automatically builds docker containers and uploads them to two repositories for easy access:
+- [hm-pktfwd on DockerHub](https://hub.docker.com/r/nebraltd/hm-pktfwd)
+- [hm-pktfwd on GitHub Packages](https://github.com/NebraLtd/hm-pktfwd/pkgs/container/hm-pktfwd)
+
+The images are tagged using the docker long and short commit SHAs for that release. The current version deployed to miners can be found in the [helium-miner-software repo](https://github.com/NebraLtd/helium-miner-software/blob/production/docker-compose.yml).
