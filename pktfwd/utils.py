@@ -56,45 +56,46 @@ def is_concentrator_sx1302(util_chip_id_filepath, spi_bus):
     Use the util_chip_id to determine if concentrator is sx1302
     TODO permalink to script
     """
-    util_chip_id_cmd = [util_chip_id_filepath, "-d", "/dev/{}".format(spi_bus)]
-    util_chip_id_response = subprocess.run(util_chip_id_cmd, capture_output=True, text=True).stdout  # nosec (B603)
-    return "concentrator EUI:" in util_chip_id_response
+    return False
+    # util_chip_id_cmd = [util_chip_id_filepath, "-d", "/dev/{}".format(spi_bus)]
+    # util_chip_id_response = subprocess.run(util_chip_id_cmd, capture_output=True, text=True).stdout  # nosec (B603)
+    # return "concentrator EUI:" in util_chip_id_response
 
 
 def get_region_filename(region):
     return REGION_CONFIG_FILENAMES[region]
 
 
-def update_global_conf(is_sx1302, sx1301_region_configs_path, sx1302_region_configs_path, region, spi_bus):
+def update_global_conf(is_sx1302, sx1301_region_configs_dir, sx1302_region_configs_dir, region, spi_bus):
     if is_sx1302:
-        replace_sx1302_global_conf_with_regional(sx1302_region_configs_path, region, spi_bus)
+        replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir, region, spi_bus)
     else:
-        replace_sx1301_global_conf_with_regional(sx1301_region_configs_path, region)
+        replace_sx1301_global_conf_with_regional(sx1301_region_configs_dir, region)
 
 
-def replace_sx1301_global_conf_with_regional(sx1301_region_configs_path, region):
+def replace_sx1301_global_conf_with_regional(sx1301_region_configs_dir, region):
     """
     Copy the regional configuration file to global_conf.json
     """
-    region_config_filepath = "%s/%s" % (sx1301_region_configs_path, get_region_filename(region))
-    global_config_filepath = "%s/%s" % (sx1301_region_configs_path, "global_conf.json")
+    region_config_filepath = "%s/%s" % (sx1301_region_configs_dir, get_region_filename(region))
+    global_config_filepath = "%s/%s" % (sx1301_region_configs_dir, "global_conf.json")
     copyfile(region_config_filepath, global_config_filepath)
 
 
-def replace_sx1302_global_conf_with_regional(sx1302_region_configs_path, region, spi_bus):
+def replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir, region, spi_bus):
     """
     Parses the regional configuration file in order to make changes and save them 
     to global_conf.json
     """
     # Writes the configuration files
-    region_config_filepath = "%s/%s" % (sx1302_region_configs_path, get_region_filename(region))
-    global_config_filepath = "%s/%s" % (sx1302_region_configs_path, "global_conf.json")
+    region_config_filepath = "%s/%s" % (sx1302_region_configs_dir, get_region_filename(region))
+    global_config_filepath = "%s/%s" % (sx1302_region_configs_dir, "global_conf.json")
   
     with open(region_config_filepath) as region_config_file:
         new_global_conf = json.load(region_config_file)
 
     # Inject SPI Bus
-    new_global_conf['SX130x_conf']['com_path'] = "/dev/%s" % spi_bus
+    new_global_conf['SX130x_conf']['com_dir'] = "/dev/%s" % spi_bus
 
     with open(global_config_filepath, 'w') as global_config_file:
         json.dump(new_global_conf, global_config_file)

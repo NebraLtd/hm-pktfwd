@@ -1,34 +1,38 @@
 # Packet Forwarder Docker File
-# (C) Nebra Ltd 2019
+# (C) Nebra Ltd 2021
 # Licensed under the MIT License.
 
 ####################################################################################################
 ################################## Stage: SX1301 Builder ###########################################
 FROM balenalib/raspberry-pi-debian:buster-build as sx1301-builder
 
-ENV INPUTS_PATH=/opt/inputs
-ENV INPUT_UPSTREAM_LORA_GATEWAY_PATH="$INPUTS_PATH/lora_gateway"
-ENV INPUT_UPSTREAM_PACKET_FORWARDER_PATH="$INPUTS_PATH/packet_forwarder"
+ENV INPUTS_DIR=/opt/inputs
+ENV INPUT_UPSTREAM_LORA_GATEWAY_DIR="$INPUTS_DIR/lora_gateway"
+ENV INPUT_UPSTREAM_PACKET_FORWARDER_DIR="$INPUTS_DIR/packet_forwarder"
 
 ##
-ENV OUTPUTS_PATH=/opt/outputs/packet_forwarder
-ENV OUTPUT_SX1301_PATH="$OUTPUTS_PATH/sx1301"
+ENV OUTPUTS_DIR=/opt/outputs
+ENV OUTPUT_SX1301_DIR="$OUTPUTS_DIR/sx1301"
+ENV OUTPUT_SX1301_RESET_LGW_FILEPATH="$OUTPUT_SX1301_DIR/reset_lgw.sh"
 ##
 
-WORKDIR "$INPUTS_PATH"
-RUN echo "Switched to ${INPUTS_PATH}"
+WORKDIR "$INPUTS_DIR"
+RUN echo "Switched to ${INPUTS_DIR}"
 
-COPY build/ "$INPUTS_PATH/"
+COPY build/ "$INPUTS_DIR/"
 
-RUN . "$INPUTS_PATH/build_for_sx1301.sh"
+RUN . "$INPUTS_DIR/build_for_sx1301.sh"
+
+COPY sleep.sh sleep.sh
+ENTRYPOINT ["sh", "sleep.sh"]
 
 ####################################################################################################
 ################################## Stage: SX1301 Builder ###########################################
-FROM balenalib/raspberry-pi-debian:buster-build as python-builder
+FROM balenalib/raspberry-pi-debian:buster-build as pktfwd-builder
 
-ENV INPUTS_PATH=/opt/inputs
-ENV OUTPUTS_PATH=/opt/outputs/pktfwd
-WORKDIR "$INPUTS_PATH"
+ENV INPUTS_DIR=/opt/inputs
+ENV OUTPUTS_DIR=/opt/outputs/pktfwd-dependencies
+WORKDIR "$INPUTS_DIR"
 
 # Install build tools
 # hadolint ignore=DL3008
@@ -39,62 +43,75 @@ RUN apt-get update && \
 
 # Copy python dependencies for `pip install` later
 COPY requirements.txt requirements.txt
-RUN pip3 install --target="$OUTPUTS_PATH" --no-cache-dir -r requirements.txt
+
+RUN pip3 install --target="$OUTPUTS_DIR" -r requirements.txt
+# TODO remove once published
+RUN pip3 install setuptools
+RUN pip3 install --target="$OUTPUTS_DIR" git+https://github.com/NebraLtd/hm-pyhelper@marvinmarnold/releases
+
+COPY sleep.sh sleep.sh
+ENTRYPOINT ["sh", "sleep.sh"]
 
 ###################################################################################################
 ################################## Stage: runner ##################################################
-FROM balenalib/raspberry-pi-debian:buster-build as runner
+FROM balenalib/raspberry-pi-debian:buster-run as pktfwd-runner
 
-ENV BUILD_OUTPUTS_PATH=/opt/outputs/packet_forwarder
-ENV OUTPUT_SX1301_PATH="$OUTPUTS_PATH/sx1301"
+ENV ROOT_DIR=/opt
+ENV PYTHON_APP_DIR="$ROOT_DIR/pktfwd"
+
+# ENV SX1301_BUILDER_OUTPUTS_DIR=/opt/outputs/packet_forwarder
+ENV SX1301_BUILDER_OUTPUTS_DIR=/opt/outputs/sx1301
+ENV SX1301_BUILDER_OUTPUT_RESET_LGW_FILEPATH="$SX1301_BUILDER_OUTPUTS_DIR/reset_lgw.sh"
+ENV PKTFWD_BUILDER_OUTPUTS_DIR=/opt/outputs/pktfwd-dependencies
 
 ##
-# ENV OUTPUTS_PATH=/opt/outputs/packet_forwarder
-# ENV OUTPUT_SX1301_PATH="$OUTPUTS_PATH/sx1301"
 # VARIANT = os.environ['VARIANT']
-ENV SX1301_REGION_CONFIGS_PATH=/opt/pktfwd/config/lora_templates_sx1301
-ENV SX1302_REGION_CONFIGS_PATH=/opt/pktfwd/config/lora_templates_sx1302
-# UTIL_CHIP_ID_FILEPATH = os.environ['UTIL_CHIP_ID_FILEPATH'] # '/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id')
-# RESET_LGW_FILEPATH = os.environ['RESET_LGW_FILEPATH']
-# SX1302_LORA_PKT_FWD_FILEPATH = os.environ['SX1302_LORA_PKT_FWD_FILEPATH']
-# SX1301_LORA_PKT_FWD_DIR = os.environ['SX1301_LORA_PKT_FWD_DIR']
+ENV SX1301_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1301"
+ENV SX1302_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1302"
+# os.environ['UTIL_CHIP_ID_FILEPATH'] # '/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id')
+ENV UTIL_CHIP_ID_FILEPATH=TODO
+ENV RESET_LGW_FILEPATH="$SX1301_BUILDER_OUTPUT_RESET_LGW_FILEPATH"
+# os.environ['SX1302_LORA_PKT_FWD_FILEPATH']
+ENV SX1302_LORA_PKT_FWD_FILEPATH=TODO
+ENV SX1301_LORA_PKT_FWD_DIR="$SX1301_BUILDER_OUTPUTS_DIR"
 ##
 
-# ENV BUILD_OUTPUT_PATH=/opt/packet_forwarder
-WORKDIR /opt/
+WORKDIR "$ROOT_DIR"
 
 # Copy python app
-COPY pktfwd/* pktfwd/
+COPY pktfwd/ "$PYTHON_APP_DIR"
 
 # Copy reset_lgw and util_chip_id scripts
-COPY --from=sx1301-builder "$BUILD_OUTPUT_PATH" "$BUILD_OUTPUT_PATH"
+COPY --from=sx1301-builder "$SX1301_BUILDER_OUTPUTS_DIR" "$ROOT_DIR/sx1301"
+COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUTS_DIR" "$ROOT_DIR/pktfwd-dependencies"
 
 # # hadolint ignore=DL3008
-# RUN apt update && \
-#     apt install python3 && \
-#     apt-get autoremove -y && \
-#     apt-get clean && \
-#     rm -rf /var/lib/apt/lists/*
+RUN apt update && \
+    apt install python3 && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
+ENV PYTHONPATH="${PYTHONPATH}:$ROOT_DIR/pktfwd-dependencies"
+ENTRYPOINT ["python3", "pktfwd"]
+# CMD while true; do sleep 1000; done
 
 # # Copy sx1301 & sx1302 packet_forwader from builder
-# COPY --from=builder "$BUILD_OUTPUT_PATH" "$BUILD_OUTPUT_PATH"
+# COPY --from=builder "$BUILD_OUTPUT_DIR" "$BUILD_OUTPUT_DIR"
 
-# # TODO COPY PYTHON SITE-PACKAGES
 
 # # Run run_pkt script
 # # ENTRYPOINT ["python3", "/opt/pktfwd"]
 # # ENTRYPOINT ["/bin/bash"]
-# CMD while true; do sleep 1000; done
 
-# ENV BUILD_INPUT_PKTFWD_APP_PATH="$BUILD_INPUTS_PATH/pktfwd"
-# ENV BUILD_INPUT_SX1301_CONFIG_PATH="$BUILD_INPUTS_PATH/pktfwd/config/lora_templates_sx1301"
+# ENV BUILD_INPUT_PKTFWD_APP_DIR="$BUILD_INPUTS_DIR/pktfwd"
+# ENV BUILD_INPUT_SX1301_CONFIG_DIR="$BUILD_INPUTS_DIR/pktfwd/config/lora_templates_sx1301"
 # # TODO switch back to EU default
 # ENV BUILD_INPUT_SX1301_GLOBAL_CONFIG_FILENAME="US-global_conf.json"
 
 
-# # Script that reads from $BUILD_INPUTS_PATH and exports to BUILD_OUTPUT_PATH
-# ENV BUILD_SCRIPT_PATH="$BUILD_INPUTS_PATH/build_all_sx130x_variants.sh"
+# # Script that reads from $BUILD_INPUTS_DIR and exports to BUILD_OUTPUT_DIR
+# ENV BUILD_SCRIPT_DIR="$BUILD_INPUTS_DIR/build_all_sx130x_variants.sh"
 
 # # Move to correct working directory
 
@@ -102,11 +119,11 @@ COPY --from=sx1301-builder "$BUILD_OUTPUT_PATH" "$BUILD_OUTPUT_PATH"
 # RUN pip3 install --no-cache-dir -r requirements.txt
 
 # # Copy the upstream code, build files, and sx1302 fixes
-# COPY build/ "$BUILD_INPUTS_PATH/"
-# COPY pktfwd/ "$BUILD_INPUT_PKTFWD_APP_PATH/"
+# COPY build/ "$BUILD_INPUTS_DIR/"
+# COPY pktfwd/ "$BUILD_INPUT_PKTFWD_APP_DIR/"
 
 # # Installs to /opt/packet_forwarder
-# RUN "$BUILD_SCRIPT_PATH"
+# RUN "$BUILD_SCRIPT_DIR"
 
 # # No need to cleanup the builder
 

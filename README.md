@@ -3,7 +3,7 @@ Helium Miner Packet Forwarder
 
 This compiles the packet forwarder container on the Nebra Miners.
 
-# Supported Region Plans
+## Supported Region Plans
 
 You can typically find the exact region plan you need to use at [What Helium Region](https://whatheliumregion.xyz/) or on the [Helium Miner GitHub repo](https://github.com/helium/miner/blob/master/priv/countries_reg_domains.csv) however the table below provides a rough guide...
 
@@ -32,3 +32,16 @@ https://github.com/Lora-net/lora_gateway/tree/master/libloragw
 https://github.com/Lora-net/packet_forwarder
 
 git clone --recurse-submodules
+
+## Development
+
+### Building
+
+`docker buildx build --platform linux/arm64/v8 --progress=plain -t DOCKERHUB_USER/hm-pktfwd-runner .`
+
+To stop at an intermediary stage
+`docker buildx build --platform linux/arm64/v8 --progress=plain --target pktfwd-builder -t pktfwd-builder .`
+
+docker run --platform linux/arm64/v8
+
+docker push DOCKERHUB_USER/pktfwd-runner

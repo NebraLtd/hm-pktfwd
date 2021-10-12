@@ -11,16 +11,16 @@ LOGGER = get_logger(__name__)
 
 
 class PktfwdApp:
-    def __init__(self, variant, region_override, region_filepath, sx1301_region_configs_path, 
-                sx1302_region_configs_path, sentry_key, 
+    def __init__(self, variant, region_override, region_filepath, sx1301_region_configs_dir, 
+                sx1302_region_configs_dir, sentry_key, 
                 balena_id, balena_app, diagnostics_filepath, await_system_sleep_seconds,
                 reset_lgw_filepath, reset_lgw_pin_envvar, util_chip_id_filepath, 
                 sx1302_lora_pkt_fwd_filepath, sx1301_lora_pkt_fwd_dir):
         
         init_sentry(sentry_key, balena_id, balena_app)
         self.set_variant_attributes(variant)
-        self.sx1301_region_configs_path = sx1301_region_configs_path
-        self.sx1302_region_configs_path = sx1302_region_configs_path
+        self.sx1301_region_configs_dir = sx1301_region_configs_dir
+        self.sx1302_region_configs_dir = sx1302_region_configs_dir
         self.region_override = region_override
         self.region_filepath = region_filepath
         self.diagnostics_filepath = diagnostics_filepath
@@ -37,17 +37,21 @@ class PktfwdApp:
         self.prepare_to_start()
 
         is_sx1302 = is_concentrator_sx1302(self.util_chip_id_filepath, self.spi_bus)
-        update_global_conf(is_sx1302, self.sx1301_region_configs_path, self.sx1302_region_configs_path, self.region, self.spi_bus)
+        update_global_conf(is_sx1302, self.sx1301_region_configs_dir, self.sx1302_region_configs_dir, self.region, self.spi_bus)
         retry_start_concentrator(is_sx1302, self.spi_bus, self.sx1302_lora_pkt_fwd_filepath, self.sx1301_lora_pkt_fwd_dir,
                                 self.reset_lgw_filepath, self.reset_lgw_pin_envvar, self.reset_pin)
 
-        # retry_start_concentrator will hang indefinitely while it runs. The lines below will only be
-        # reached if the concentrator fails to start.
+        # retry_start_concentrator will hang indefinitely while upstream packet_forwarder runs. 
+        # The lines below will only be reached if the concentrator exits unexpectedly.
         LOGGER.error("Unable to start concentrator. Shutting down.")
         self.stop()
 
 
     def prepare_to_start(self):
+        """
+        Performs additional initialization not done in __init__ because it depends on the 
+        filesystem being available. 
+        """
         write_diagnostics(self.diagnostics_filepath, True)
         await_spi_available(self.spi_bus)
 
