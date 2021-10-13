@@ -33,7 +33,7 @@ compile_upstream_libs() {
     # compile_sx1301 spidev0.1
     # compile_sx1301 spidev1.0
     # compile_sx1301 spidev1.1
-    # compile_sx1301 spidev1.2
+    compile_sx1301 spidev1.2
     # compile_sx1301 spidev2.0
     # compile_sx1301 spidev2.1
     compile_sx1301 spidev32766.0

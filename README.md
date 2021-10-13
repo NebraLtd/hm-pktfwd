@@ -37,11 +37,13 @@ git clone --recurse-submodules
 
 ### Building
 
-`docker buildx build --platform linux/arm64/v8 --progress=plain -t DOCKERHUB_USER/hm-pktfwd-runner .`
+`docker buildx build --platform linux/arm64/v8 --progress=plain -t DOCKERHUB_USER/hm-pktfwd .`
 
 To stop at an intermediary stage
 `docker buildx build --platform linux/arm64/v8 --progress=plain --target pktfwd-builder -t pktfwd-builder .`
 
 docker run --platform linux/arm64/v8
 
-docker push DOCKERHUB_USER/pktfwd-runner
+docker push DOCKERHUB_USER/hm-pktfwd
+
+docker image tag docker.io/marvinnebra/hm-pktfwd marvinnebra/hm-pktfwd:0.0.3

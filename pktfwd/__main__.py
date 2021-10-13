@@ -1,9 +1,10 @@
 import os
-import logging
-# TODO import from pyhelper instead
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
-
+from hm_pyhelper.logger import get_logger
 from pktfwd.pktfwd_app import PktfwdApp
+
+
+LOGGER = get_logger(__name__)
+
 
 #
 # Mandatory
@@ -13,6 +14,8 @@ SX1301_REGION_CONFIGS_DIR = os.environ['SX1301_REGION_CONFIGS_DIR']
 SX1302_REGION_CONFIGS_DIR = os.environ['SX1302_REGION_CONFIGS_DIR']
 UTIL_CHIP_ID_FILEPATH = os.environ['UTIL_CHIP_ID_FILEPATH'] # '/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id')
 RESET_LGW_FILEPATH = os.environ['RESET_LGW_FILEPATH']
+# Directory the python script will be run from. global_conf.json will be copied here
+ROOT_DIR = os.environ['ROOT_DIR']
 SX1302_LORA_PKT_FWD_FILEPATH = os.environ['SX1302_LORA_PKT_FWD_FILEPATH']
 SX1301_LORA_PKT_FWD_DIR = os.environ['SX1301_LORA_PKT_FWD_DIR']
 
@@ -32,9 +35,6 @@ DIAGNOSTICS_FILEPATH = os.getenv('DIAGNOSTICS_FILEPATH', '/var/pktfwd/diagnostic
 # Sleep time before attempting to start concentrator.
 # TODO more details about why necessary
 AWAIT_SYSTEM_SLEEP_SECONDS = int(os.getenv('AWAIT_SYSTEM_SLEEP_SECONDS', '5'))
-
-# Name of the envvar that will be used to identify the reset pin
-RESET_LGW_PIN_ENVVAR = os.getenv('RESET_LGW_PIN_ENVVAR', 'IOT_SK_SX1301_RESET_PIN')
 
 # If False, Sentry will not be enabled
 SENTRY_KEY = os.getenv('SENTRY_PKTFWD', False)
@@ -56,7 +56,7 @@ def main():
     start()
 
 def validate_env():
-    logging.debug("Starting with the following ENV:\n\
+    LOGGER.debug("Starting with the following ENV:\n\
         VARIANT=%s\n\
         REGION_OVERRIDE=%s\n\
         REGION_FILEPATH=%s\n\
@@ -68,25 +68,25 @@ def validate_env():
         DIAGNOSTICS_FILEPATH=%s\n\
         AWAIT_SYSTEM_SLEEP_SECONDS=%s\n\
         RESET_LGW_FILEPATH=%s\n\
-        RESET_LGW_PIN_ENVVAR=%s\n\
         UTIL_CHIP_ID_FILEPATH=%s\n\
+        ROOT_DIR=%s\n\
         SX1302_LORA_PKT_FWD_FILEPATH=%s\n\
         SX1301_LORA_PKT_FWD_DIR=%s\n" % 
         (VARIANT, REGION_OVERRIDE, REGION_FILEPATH, SX1301_REGION_CONFIGS_DIR, SX1302_REGION_CONFIGS_DIR, SENTRY_KEY, 
             BALENA_ID, BALENA_APP, DIAGNOSTICS_FILEPATH, AWAIT_SYSTEM_SLEEP_SECONDS,
-            RESET_LGW_FILEPATH, RESET_LGW_PIN_ENVVAR, UTIL_CHIP_ID_FILEPATH, 
+            RESET_LGW_FILEPATH, UTIL_CHIP_ID_FILEPATH, ROOT_DIR,
             SX1302_LORA_PKT_FWD_FILEPATH, SX1301_LORA_PKT_FWD_DIR))
 
 
 def start():
     pktfwd_app = PktfwdApp(VARIANT, REGION_OVERRIDE, REGION_FILEPATH, SX1301_REGION_CONFIGS_DIR, SX1302_REGION_CONFIGS_DIR, 
                     SENTRY_KEY, BALENA_ID, BALENA_APP, DIAGNOSTICS_FILEPATH, AWAIT_SYSTEM_SLEEP_SECONDS,
-                    RESET_LGW_FILEPATH, RESET_LGW_PIN_ENVVAR, UTIL_CHIP_ID_FILEPATH,
+                    RESET_LGW_FILEPATH, UTIL_CHIP_ID_FILEPATH, ROOT_DIR,
                     SX1302_LORA_PKT_FWD_FILEPATH, SX1301_LORA_PKT_FWD_DIR)
     try:
         pktfwd_app.start()
     except Exception:
-        logging.exception('__main__ failed for unknown reason')
+        LOGGER.exception('__main__ failed for unknown reason')
         pktfwd_app.stop()
 
 
