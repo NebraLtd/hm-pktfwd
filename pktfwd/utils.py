@@ -85,9 +85,9 @@ def update_global_conf(is_sx1302, root_dir, sx1301_region_configs_dir, sx1302_re
     chip type, region, and spi_bus.
     """
     if is_sx1302:
-        replace_sx1302_global_conf_with_regional(root_dir, sx1302_region_configs_dir, region, spi_bus)
+        replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir, region, spi_bus)
     else:
-        replace_sx1301_global_conf_with_regional(sx1301_region_configs_dir, region)
+        replace_sx1301_global_conf_with_regional(root_dir, sx1301_region_configs_dir, region)
 
 
 def replace_sx1301_global_conf_with_regional(root_dir, sx1301_region_configs_dir, region):

@@ -83,6 +83,7 @@ def start():
                     SENTRY_KEY, BALENA_ID, BALENA_APP, DIAGNOSTICS_FILEPATH, AWAIT_SYSTEM_SLEEP_SECONDS,
                     RESET_LGW_FILEPATH, UTIL_CHIP_ID_FILEPATH, ROOT_DIR,
                     SX1302_LORA_PKT_FWD_FILEPATH, SX1301_LORA_PKT_FWD_DIR)
+                    
     try:
         pktfwd_app.start()
     except Exception:

@@ -28,14 +28,13 @@ compile_upstream_libs() {
     mkdir -p "$OUTPUT_SX1301_DIR"
     
     # In order to be more portable, intentionally not interating over an array
-    # TODO uncomment
-    # compile_sx1301 spidev0.0
-    # compile_sx1301 spidev0.1
-    # compile_sx1301 spidev1.0
-    # compile_sx1301 spidev1.1
+    compile_sx1301 spidev0.0
+    compile_sx1301 spidev0.1
+    compile_sx1301 spidev1.0
+    compile_sx1301 spidev1.1
     compile_sx1301 spidev1.2
-    # compile_sx1301 spidev2.0
-    # compile_sx1301 spidev2.1
+    compile_sx1301 spidev2.0
+    compile_sx1301 spidev2.1
     compile_sx1301 spidev32766.0
 }
 
