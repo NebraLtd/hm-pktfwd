@@ -13,7 +13,3 @@ class TestPktfwdApp(TestCase):
                     "SX1302_LORA_PKT_FWD_FILEPATH", "/opt/outputs/sx1301")
 
         self.assertEqual(pktfwd_app.variant, 'NEBHNT-IN1')
-
-
-        # UTIL_CHIP_ID_FILEPATH=TODO
-        # SX1302_LORA_PKT_FWD_FILEPATH=TODO

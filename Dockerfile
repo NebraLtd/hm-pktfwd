@@ -35,7 +35,7 @@ ENV OUTPUTS_DIR=/opt/outputs/pktfwd-dependencies
 
 WORKDIR "$INPUTS_DIR"
 
-# Install build tools
+# Install python3 and pip3
 # hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \
@@ -54,34 +54,41 @@ RUN pip3 install --target="$OUTPUTS_DIR" git+https://github.com/NebraLtd/hm-pyhe
 ################################## Stage: runner ##################################################
 FROM balenalib/raspberry-pi-debian:buster-run as pktfwd-runner
 
-# Variables copied from previous stages
+ENV ROOT_DIR=/opt
+
+# Copy from: Locations of build assets within images of earlier stages
 ENV SX1301_BUILDER_OUTPUTS_DIR=/opt/outputs/sx1301
 ENV SX1301_BUILDER_OUTPUT_RESET_LGW_FILEPATH="$SX1301_BUILDER_OUTPUTS_DIR/reset_lgw.sh"
 ENV PKTFWD_BUILDER_OUTPUTS_DIR=/opt/outputs/pktfwd-dependencies
 
+# Copy to: Locations build assets from earlier stages/source are copied into
+ENV PYTHON_APP_DIR="$ROOT_DIR/pktfwd"
+ENV PYTHON_DEPENDENCIES_DIR="$ROOT_DIR/pktfwd-dependencies"
+ENV SX1301_FROM_UPSTREAM_DIR="$ROOT_DIR/sx1301"
+
 # Variables required for pktfwd python app
-ENV ROOT_DIR=/opt
 ENV SX1301_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1301"
 ENV SX1302_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1302"
 # os.environ['UTIL_CHIP_ID_FILEPATH'] # '/opt/iotloragateway/packet_forwarder/sx1302/util_chip_id/chip_id')
 ENV UTIL_CHIP_ID_FILEPATH=TODO
 # os.environ['SX1302_LORA_PKT_FWD_FILEPATH']
 ENV SX1302_LORA_PKT_FWD_FILEPATH=TODO
-ENV SX1301_LORA_PKT_FWD_DIR="$ROOT_DIR/sx1301"
+ENV SX1301_LORA_PKT_FWD_DIR="$SX1301_FROM_UPSTREAM_DIR"
 ENV RESET_LGW_FILEPATH="$SX1301_LORA_PKT_FWD_DIR/reset_lgw.sh"
 
 WORKDIR "$ROOT_DIR"
 
 # Copy python app
-COPY pktfwd/ "$ROOT_DIR/pktfwd"
+COPY pktfwd/ "$PYTHON_APP_DIR"
 
 # Copy upstream lora_pkt_fwd, reset_lgw, and util_chip_id scripts
-COPY --from=sx1301-builder "$SX1301_BUILDER_OUTPUTS_DIR" "$ROOT_DIR/sx1301"
+COPY --from=sx1301-builder "$SX1301_BUILDER_OUTPUTS_DIR" "$SX1301_FROM_UPSTREAM_DIR"
 
 # Copy pktfwd python app dependencies
-COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUTS_DIR" "$ROOT_DIR/pktfwd-dependencies"
+COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUTS_DIR" "$PYTHON_DEPENDENCIES_DIR"
 
 # hadolint ignore=DL3008
+# Install python3 then cleanup
 RUN apt update && \
     apt install python3 && \
     apt-get autoremove -y && \
@@ -89,7 +96,7 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
 # Add python dependencies to PYTHONPATH
-ENV PYTHONPATH="${PYTHONPATH}:$ROOT_DIR/pktfwd-dependencies"
+ENV PYTHONPATH="${PYTHONPATH}:$PYTHON_DEPENDENCIES_DIR"
 
 # Run pktfwd/__main__.py
 ENTRYPOINT ["python3", "pktfwd"]
