@@ -10,6 +10,7 @@ FROM balenalib/raspberry-pi-debian:buster-build as sx1301-builder
 ENV INPUTS_DIR=/opt/inputs
 ENV INPUT_UPSTREAM_LORA_GATEWAY_DIR="$INPUTS_DIR/lora_gateway"
 ENV INPUT_UPSTREAM_PACKET_FORWARDER_DIR="$INPUTS_DIR/packet_forwarder"
+ENV SPI_SPEED=2000000
 
 # Variables to be referenced pktfwd-runner stage
 ENV OUTPUTS_DIR=/opt/outputs

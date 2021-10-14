@@ -2,7 +2,7 @@
 
 # lora_pkt_fwd references lora_gateway so both libraries must be built
 # https://github.com/Lora-net/packet_forwarder/blob/d0226eae6e7b6bbaec6117d0d2372bf17819c438/lora_pkt_fwd/Makefile#L7
-compile_sx1301() {
+compile_sx1301_for_spi_bus() {
     spi_bus="$1"
     echo "Compiling upstream lora_gateway/libloragw for $spi_bus"
 
@@ -28,14 +28,14 @@ compile_upstream_libs() {
     mkdir -p "$OUTPUT_SX1301_DIR"
     
     # In order to be more portable, intentionally not interating over an array
-    compile_sx1301 spidev0.0
-    compile_sx1301 spidev0.1
-    compile_sx1301 spidev1.0
-    compile_sx1301 spidev1.1
-    compile_sx1301 spidev1.2
-    compile_sx1301 spidev2.0
-    compile_sx1301 spidev2.1
-    compile_sx1301 spidev32766.0
+    compile_sx1301_for_spi_bus spidev0.0
+    compile_sx1301_for_spi_bus spidev0.1
+    compile_sx1301_for_spi_bus spidev1.0
+    compile_sx1301_for_spi_bus spidev1.1
+    compile_sx1301_for_spi_bus spidev1.2
+    compile_sx1301_for_spi_bus spidev2.0
+    compile_sx1301_for_spi_bus spidev2.1
+    compile_sx1301_for_spi_bus spidev32766.0
 }
 
 copy_reset_script() {
