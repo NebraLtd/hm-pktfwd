@@ -38,9 +38,8 @@ ENV ROOT_DIR=/opt
 # Copy from: Locations of build assets within images of earlier stages
 ENV SX1301_LORA_GATEWAY_OUTPUT_RESET_LGW_FILEPATH=/opt/output/reset_lgw.sh
 ENV SX1301_PACKET_FORWARDER_OUTPUT_DIR=/opt/output
-# ENV SX1301_BUILDER_OUTPUTS_DIR=/opt/outputs/sx1301
-# ENV SX1301_BUILDER_OUTPUT_RESET_LGW_FILEPATH="$SX1301_BUILDER_OUTPUTS_DIR/reset_lgw.sh"
 ENV PKTFWD_BUILDER_OUTPUT_DIR=/opt/outputs/pktfwd-dependencies
+ENV SX1302_HAL_CHIP_ID_OUTPUT_DIR=/opt/util_chip_id/chip_id
 
 # Copy to: Locations build assets from earlier stages/source are copied into
 ENV PYTHON_APP_DIR="$ROOT_DIR/pktfwd"
@@ -53,8 +52,10 @@ ENV SX1302_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1302"
 ENV UTIL_CHIP_ID_FILEPATH=TODO
 # os.environ['SX1302_LORA_PKT_FWD_FILEPATH']
 ENV SX1301_DIR="$ROOT_DIR/sx1301"
+ENV SX1302_DIR="$ROOT_DIR/sx1302"
 ENV SX1302_LORA_PKT_FWD_FILEPATH=TODO
 ENV SX1301_RESET_LGW_FILEPATH="$SX1301_DIR/reset_lgw.sh"
+ENV UTIL_CHIP_ID_FILEPATH="$SX1302_DIR/chip_id"
 
 WORKDIR "$ROOT_DIR"
 
@@ -62,12 +63,13 @@ WORKDIR "$ROOT_DIR"
 COPY pktfwd/ "$PYTHON_APP_DIR"
 
 # Copy sx1301 lora_pkt_fwd_SPI_BUS
-COPY --from=marvinnebra/packet_forwarder "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
+COPY --from=marvinnebra/packet_forwarder:0.0.16 "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
 
 # Copy sx1301 reset_lgw.sh
-COPY --from=marvinnebra/lora_gateway "$SX1301_LORA_GATEWAY_OUTPUT_RESET_LGW_FILEPATH" "$SX1301_RESET_LGW_FILEPATH"
+COPY --from=marvinnebra/lora_gateway:0.0.16 "$SX1301_LORA_GATEWAY_OUTPUT_RESET_LGW_FILEPATH" "$SX1301_RESET_LGW_FILEPATH"
 
-# TODO: Copy HAL and chip ID
+# Copy sx1302 chip_id utility
+COPY --from=marvinnebra/sx1302_hal:0.0.16 "$SX1302_HAL_CHIP_ID_OUTPUT_DIR" "$UTIL_CHIP_ID_FILEPATH"
 
 # Copy pktfwd python app dependencies
 COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUTS_DIR" "$PYTHON_DEPENDENCIES_DIR"

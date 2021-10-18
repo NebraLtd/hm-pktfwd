@@ -96,8 +96,6 @@ def replace_sx1301_global_conf_with_regional(root_dir, sx1301_region_configs_dir
     """
     region_config_filepath = "%s/%s" % (sx1301_region_configs_dir, get_region_filename(region))
     global_config_filepath = "%s/%s" % (root_dir, "global_conf.json")
-    # global_config_filepath = "%s/%s" % (sx1301_region_configs_dir, "global_conf.json")
-    # global_config_filepath = "/opt/sx1301/%s" % ("global_conf.json")
     LOGGER.debug("Copying SX1301 conf from %s to %s" % (region_config_filepath, global_config_filepath))
     copyfile(region_config_filepath, global_config_filepath)
 
@@ -107,10 +105,9 @@ def replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir, region, 
     Parses the regional configuration file in order to make changes and save them 
     to global_conf.json
     """
-    # Writes the configuration files
+    # Write the configuration files
     region_config_filepath = "%s/%s" % (sx1302_region_configs_dir, get_region_filename(region))
     global_config_filepath = "%s/%s" % (sx1302_region_configs_dir, "global_conf.json")
-  
     with open(region_config_filepath) as region_config_file:
         new_global_conf = json.load(region_config_file)
 
