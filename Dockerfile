@@ -1,114 +1,88 @@
 # Packet Forwarder Docker File
-# (C) Nebra Ltd 2019
+# (C) Nebra Ltd 2021
 # Licensed under the MIT License.
 
 ####################################################################################################
-################################## Stage: builder ##################################################
+########################### Stage: PktFwd Python App Builder #######################################
+FROM balenalib/raspberry-pi-debian:buster-build as pktfwd-builder
 
-FROM balenalib/raspberry-pi-debian:buster-build as builder
+# Variables used internally to this stage
+ENV INPUT_DIR=/opt/input
 
-# Move to correct working directory
-WORKDIR /opt/iotloragateway/dev
+# Variables to be referenced pktfwd-runner stage
+ENV OUTPUT_DIR=/opt/output/pktfwd-dependencies
 
-# Copy python dependencies for `pip install` later
-COPY requirements.txt requirements.txt
+WORKDIR "$INPUT_DIR"
 
-# This will be the path that venv uses for installation below
-ENV PATH="/opt/iotloragateway/dev/venv/bin:$PATH"
-
-# Install build tools
+# Install python3 and pip3
 # hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \
-        automake \
-        libtool \
-        autoconf \
-        git \
-        ca-certificates \
-        pkg-config \
-        build-essential \
-        python3 \
-        python3-pip \
-        python3-venv && \
-    # Because the PATH is already updated above, this command creates a new venv AND activates it
-    python3 -m venv /opt/iotloragateway/dev/venv && \
-    # Given venv is active, this `pip` refers to the python3 variant
-    pip install --no-cache-dir -r requirements.txt
-
-# Copy the buildfiles and sx1302 concentrator fixes
-COPY buildfiles buildfiles
-COPY sx1302fixes sx1302fixes
-
-# Clone the lora gateway and packet forwarder repos
-RUN git clone https://github.com/NebraLtd/lora_gateway.git
-RUN git clone https://github.com/NebraLtd/packet_forwarder.git
-
-# Create folder needed by packetforwarder compiler
-RUN mkdir -p /opt/iotloragateway/packetforwarder
-
-# Compile for sx1301 concentrator on all the necessary SPI buses
-RUN ./buildfiles/compileSX1301.sh spidev0.0
-RUN ./buildfiles/compileSX1301.sh spidev0.1
-RUN ./buildfiles/compileSX1301.sh spidev1.0
-RUN ./buildfiles/compileSX1301.sh spidev1.1
-RUN ./buildfiles/compileSX1301.sh spidev1.2
-RUN ./buildfiles/compileSX1301.sh spidev2.0
-RUN ./buildfiles/compileSX1301.sh spidev2.1
-RUN ./buildfiles/compileSX1301.sh spidev32766.0
-
-# Compile for sx1302 concentrator
-RUN ./buildfiles/compileSX1302.sh
-
-# No need to cleanup the builder
-
-####################################################################################################
-################################### Stage: runner ##################################################
-
-FROM balenalib/raspberry-pi-debian:buster-run as runner
-
-# Start in sx1301 directory
-WORKDIR /opt/iotloragateway/packet_forwarder/sx1301
-
-# Install python3-venv and python3-rpi.gpio
-# hadolint ignore=DL3008
-RUN apt-get update && \
-    apt-get -y install \
-        python3-venv \
-        python3-rpi.gpio && \
+        python3=3.7.3-1 \
+        python3-pip=18.1-5+rpt1 && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy sx1301 packetforwader from builder
-COPY --from=builder /opt/iotloragateway/packetforwarder .
+# Copy python dependencies for `pip3 install` later
+COPY requirements.txt requirements.txt
 
-# Copy sx1301 regional config templates
-COPY lora_templates_sx1301 lora_templates_sx1301/
+RUN pip3 install --target="$OUTPUT_DIR" --no-cache-dir -r requirements.txt
+# TODO remove once published
+RUN pip3 install setuptools wheel
+RUN pip3 install --target="$OUTPUT_DIR" git+https://github.com/NebraLtd/hm-pyhelper@marvinmarnold/fix-logger-packaging --upgrade --no-cache-dir
 
-# Use EU config as initial default
-COPY lora_templates_sx1301/local_conf.json local_conf.json
-COPY lora_templates_sx1301/EU-global_conf.json global_conf.json
+###################################################################################################
+################################## Stage: runner ##################################################
+FROM balenalib/raspberry-pi-debian:buster-run as pktfwd-runner
 
-# Move to sx1302 directory
-WORKDIR /opt/iotloragateway/packet_forwarder/sx1302
+ENV ROOT_DIR=/opt
 
-# Copy sx1302 hal from builder
-COPY --from=builder /opt/iotloragateway/dev/sx1302_hal-2.1.0 .
+# Copy from: Locations of build assets within images of earlier stages
+ENV SX1301_LORA_GATEWAY_OUTPUT_RESET_LGW_FILEPATH=/opt/output/reset_lgw.sh
+ENV SX1301_PACKET_FORWARDER_OUTPUT_DIR=/opt/output
+ENV SX1302_HAL_OUTPUT_DIR=/opt/output
+ENV PKTFWD_BUILDER_OUTPUT_DIR=/opt/output/pktfwd-dependencies
 
-# Copy sx1302 regional config templates
-COPY lora_templates_sx1302 lora_templates_sx1302/
+# Copy to: Locations build assets from earlier stages/source are copied into
+ENV SX1301_DIR="$ROOT_DIR/sx1301"
+ENV SX1302_DIR="$ROOT_DIR/sx1302"
+ENV PYTHON_APP_DIR="$ROOT_DIR/pktfwd"
+ENV PYTHON_DEPENDENCIES_DIR="$ROOT_DIR/pktfwd-dependencies"
+ENV SX1301_RESET_LGW_FILEPATH="$SX1301_DIR/reset_lgw.sh"
 
-# Use EU config as initial default
-COPY lora_templates_sx1302/local_conf.json packet_forwarder/local_conf.json
-COPY lora_templates_sx1302/EU-global_conf.json packet_forwarder/global_conf.json
+# Variables required for pktfwd python app
+ENV SX1301_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1301"
+ENV SX1302_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1302"
+ENV SX1302_LORA_PKT_FWD_FILEPATH="$SX1302_DIR/lora_pkt_fwd"
 
-# Move to main packet forwarder directory and copy source code
-WORKDIR /opt/iotloragateway/packet_forwarder
-COPY files/* .
+WORKDIR "$ROOT_DIR"
 
-# Copy venv from builder and update PATH to activate it
-COPY --from=builder /opt/iotloragateway/dev/venv /opt/iotloragateway/dev/venv
-ENV PATH="/opt/iotloragateway/dev/venv/bin:$PATH"
+# Copy python app
+COPY pktfwd/ "$PYTHON_APP_DIR"
 
-# Run run_pkt script
-ENTRYPOINT ["sh", "/opt/iotloragateway/packet_forwarder/run_pkt.sh"]
+# Copy sx1301 lora_pkt_fwd_SPI_BUS
+COPY --from=nebraltd/packet_forwarder:83fd72d2db4c69faffd387d757452cbe9d594a08 "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
+
+# Copy sx1301 reset_lgw.sh
+COPY --from=nebraltd/lora_gateway:9c4b1d0c79645c3065aa4c2f3019c14da6cb2675 "$SX1301_LORA_GATEWAY_OUTPUT_RESET_LGW_FILEPATH" "$SX1301_RESET_LGW_FILEPATH"
+
+# Copy sx1302 chip_id, reset_lgw, and lora_pkt_fwd
+COPY --from=nebraltd/sx1302_hal:3d73e6af43535f700ff7b6c2b49cc79d388cd70f "$SX1302_HAL_OUTPUT_DIR" "$SX1302_DIR"
+
+# Copy pktfwd python app dependencies
+COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUT_DIR" "$PYTHON_DEPENDENCIES_DIR"
+
+# hadolint ignore=DL3008
+# Install python3 then cleanup
+RUN apt-get update && \
+    apt-get -y install --no-install-recommends python3=3.7.3-1 && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Add python dependencies to PYTHONPATH
+ENV PYTHONPATH="${PYTHONPATH}:${PYTHON_DEPENDENCIES_DIR}"
+
+# Run pktfwd/__main__.py
+ENTRYPOINT ["python3", "pktfwd"]
