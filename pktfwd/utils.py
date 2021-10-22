@@ -133,7 +133,7 @@ def replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
         new_global_conf = json.load(region_config_file)
 
     # Inject SPI Bus
-    new_global_conf['SX130x_conf']['com_dir'] = "/dev/%s" % spi_bus
+    new_global_conf['SX130x_conf']['com_path'] = "/dev/%s" % spi_bus
 
     with open(global_config_filepath, 'w') as global_config_file:
         json.dump(new_global_conf, global_config_file)
