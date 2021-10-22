@@ -2,7 +2,7 @@
 
 # This script is intended to be used on all sx130x platforms. It performs
 # the following actions:
-#       - export/unpexort GPIO pin $CONCENTRATOR_RESET_PIN used to reset the SX130x chip and to enable the LDOs
+#       - export/unpexort GPIO pin ${CONCENTRATOR_RESET_PIN} used to reset the SX130x chip and to enable the LDOs
 #       - can also be used to reset other functions like the optional SX1261 radio used for LBT/Spectral Scan, SX1302 power enable,
 #           or AD5338R reset, by changing the value of CONCENTRATOR_RESET_PIN
 #
@@ -30,24 +30,24 @@ WAIT_GPIO() {
 
 init() {
     # setup GPIOs
-    echo "$CONCENTRATOR_RESET_PIN" > /sys/class/gpio/export; WAIT_GPIO
+    echo "${CONCENTRATOR_RESET_PIN}" > /sys/class/gpio/export; WAIT_GPIO
 
     # set GPIOs as output
-    echo "out" > /sys/class/gpio/gpio$CONCENTRATOR_RESET_PIN/direction; WAIT_GPIO
+    echo "out" > "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}/direction"; WAIT_GPIO
 }
 
 reset() {
-    echo "CoreCell reset through GPIO$CONCENTRATOR_RESET_PIN..."
+    echo "CoreCell reset through GPIO${CONCENTRATOR_RESET_PIN}..."
 
-    echo "1" > /sys/class/gpio/gpio$CONCENTRATOR_RESET_PIN/value; WAIT_GPIO
-    echo "0" > /sys/class/gpio/gpio$CONCENTRATOR_RESET_PIN/value; WAIT_GPIO
+    echo "1" > "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}/value"; WAIT_GPIO
+    echo "0" > "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}/value"; WAIT_GPIO
 }
 
 term() {
     # cleanup all GPIOs
-    if [ -d /sys/class/gpio/gpio$CONCENTRATOR_RESET_PIN ]
+    if [ -d "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}" ]
     then
-        echo "$CONCENTRATOR_RESET_PIN" > /sys/class/gpio/unexport; WAIT_GPIO
+        echo "${CONCENTRATOR_RESET_PIN}" > /sys/class/gpio/unexport; WAIT_GPIO
     fi
 }
 
