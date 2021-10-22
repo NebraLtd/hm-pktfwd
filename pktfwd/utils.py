@@ -12,8 +12,9 @@ from pktfwd.config.region_config_filenames import REGION_CONFIG_FILENAMES
 
 LOGGER = get_logger(__name__)
 LOGLEVEL_INT = getattr(logging, LOGLEVEL)
-LORA_PKT_FWD_RETRY_SLEEP_SECONDS = 2
-LORA_PKT_FWD_MAX_TRIES = 5
+# Number of seconds to sleep between lora_pkt_fwd start attempts.
+# Also the number of seconds to wait before attempts at updating the diagnostics value.
+LORA_PKT_FWD_RETRY_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_RETRY_SLEEP_SECONDS', '2'))
 
 
 def init_sentry(sentry_key, balena_id, balena_app):
@@ -139,20 +140,29 @@ def replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
 
 
 @retry(wait=wait_fixed(LORA_PKT_FWD_RETRY_SLEEP_SECONDS),
-       stop=stop_after_attempt(LORA_PKT_FWD_MAX_TRIES),
        before_sleep=before_sleep_log(LOGGER, LOGLEVEL_INT))
 def retry_start_concentrator(is_sx1302, spi_bus,
                              sx1302_lora_pkt_fwd_filepath,
                              sx1301_lora_pkt_fwd_dir,
-                             reset_lgw_filepath):
+                             reset_lgw_filepath,
+                             diagnostics_filepath):
     """
     Retry to start lora_pkt_fwd for the corresponding concentrator model.
     """
-    if is_sx1302:
-        # sx1302_lora_pkt_fwd_filepath calls reset_lgw
-        subprocess.run(sx1302_lora_pkt_fwd_filepath)
-    else:
+    lora_pkt_fwd_filepath = sx1302_lora_pkt_fwd_filepath
+
+    if not is_sx1302:
+        # sx1301 must explicitly reset,
+        # sx1302 automatically resets before starting
         run_reset_lgw(reset_lgw_filepath)
-        sx1301_lora_pkt_fwd_filepath = "%s/lora_pkt_fwd_%s" % \
+        lora_pkt_fwd_filepath = "%s/lora_pkt_fwd_%s" % \
                                         (sx1301_lora_pkt_fwd_dir, spi_bus)
-        subprocess.run(sx1301_lora_pkt_fwd_filepath)
+
+    lora_pkt_fwd_proc = subprocess.Popen([lora_pkt_fwd_filepath])
+    lora_pkt_fwd_proc_is_running = True
+
+    while lora_pkt_fwd_proc_is_running:
+        sleep(LORA_PKT_FWD_RETRY_SLEEP_SECONDS)
+        # proc.poll() returns None if running, otherwise the returncode
+        lora_pkt_fwd_proc_is_running = lora_pkt_fwd_proc.poll() is None
+        write_diagnostics(diagnostics_filepath, lora_pkt_fwd_proc_is_running)

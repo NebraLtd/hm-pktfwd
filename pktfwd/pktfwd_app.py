@@ -51,7 +51,8 @@ class PktfwdApp:
                                  self.sx1302_lora_pkt_fwd_filepath,
                                  self.sx1301_lora_pkt_fwd_dir,
                                  self.reset_lgw_filepath,
-                                 self.reset_pin)
+                                 self.reset_pin,
+                                 self.diagnostics_filepath)
 
         # retry_start_concentrator will hang indefinitely while the
         # upstream packet_forwarder runs. The lines below will only
@@ -64,7 +65,7 @@ class PktfwdApp:
         Performs additional initialization not done in __init__
         because it depends on the filesystem being available.
         """
-        write_diagnostics(self.diagnostics_filepath, True)
+        write_diagnostics(self.diagnostics_filepath, False)
         await_spi_available(self.spi_bus)
 
         self.region = retry_get_region(self.region_override,
