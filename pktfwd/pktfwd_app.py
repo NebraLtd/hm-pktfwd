@@ -51,7 +51,6 @@ class PktfwdApp:
                                  self.sx1302_lora_pkt_fwd_filepath,
                                  self.sx1301_lora_pkt_fwd_dir,
                                  self.reset_lgw_filepath,
-                                 self.reset_pin,
                                  self.diagnostics_filepath)
 
         # retry_start_concentrator will hang indefinitely while the
@@ -87,7 +86,7 @@ class PktfwdApp:
         # reset_lgw.sh is called throughout this app without supplying
         # the reset pin as an argument. The script falls back to the
         # value in envvar RESET_LGW_RESET_PIN_ENV_KEY.
-        os.environ[RESET_LGW_RESET_PIN_ENV_KEY] = self.reset_pin
+        os.environ[RESET_LGW_RESET_PIN_ENV_KEY] = str(self.reset_pin)
         self.spi_bus = self.variant_attributes['SPIBUS']
         LOGGER.debug("Variant %s set with reset_pin %s and spi_bus %s" %
                      (self.variant, self.reset_pin, self.spi_bus))

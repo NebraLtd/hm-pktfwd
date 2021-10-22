@@ -19,7 +19,7 @@
 #   - https://github.com/NebraLtd/sx1302_hal/blob/6324b7a568ee24dbd9c4da64df69169a22615311/tools/reset_lgw.sh
 
 if [ -z "$2" ]; then 
-    echo "CONCENTRATOR_RESET_PIN parameter not passed in, using value from the environment ${CONCENTRATOR_RESET_PIN}"
+    echo "CONCENTRATOR_RESET_PIN parameter not passed in, using value from the environment (val=${CONCENTRATOR_RESET_PIN})"
 else
     CONCENTRATOR_RESET_PIN=$2
 fi
@@ -39,8 +39,13 @@ init() {
 reset() {
     echo "CoreCell reset through GPIO${CONCENTRATOR_RESET_PIN}..."
 
-    echo "1" > "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}/value"; WAIT_GPIO
-    echo "0" > "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}/value"; WAIT_GPIO
+    # If #reset is called before #init, gpio may not be available
+    # This prevents file not found errors from showing in the logs
+    if [ -d "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}" ]
+    then
+        echo "1" > "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}/value"; WAIT_GPIO
+        echo "0" > "/sys/class/gpio/gpio${CONCENTRATOR_RESET_PIN}/value"; WAIT_GPIO
+    fi
 }
 
 term() {

@@ -41,6 +41,7 @@ ENV SX1301_RESET_LGW_FILEPATH="$SX1301_DIR/reset_lgw.sh"
 ENV SX1301_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1301"
 ENV SX1302_REGION_CONFIGS_DIR="$PYTHON_APP_DIR/config/lora_templates_sx1302"
 ENV SX1302_LORA_PKT_FWD_FILEPATH="$SX1302_DIR/lora_pkt_fwd"
+ENV UTIL_CHIP_ID_FILEPATH="$SX1302_DIR/chip_id"
 # The sx1302_hal concentrator script requires reset_lgw to be in this location
 ENV RESET_LGW_FILEPATH="$SX1302_DIR/reset_lgw.sh"
 

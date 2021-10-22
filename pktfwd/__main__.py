@@ -99,6 +99,8 @@ def start():
         pktfwd_app.start()
     except Exception:
         LOGGER.exception('__main__ failed for unknown reason')
+    finally:
+        LOGGER.info("Stopping and cleaning up pktfwd")
         pktfwd_app.stop()
 
 
