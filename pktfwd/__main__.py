@@ -13,8 +13,8 @@ VARIANT = os.environ['VARIANT']
 SX1301_REGION_CONFIGS_DIR = os.environ['SX1301_REGION_CONFIGS_DIR']
 SX1302_REGION_CONFIGS_DIR = os.environ['SX1302_REGION_CONFIGS_DIR']
 UTIL_CHIP_ID_FILEPATH = os.environ['UTIL_CHIP_ID_FILEPATH']
-SX1301_RESET_LGW_FILEPATH = os.environ['SX1301_RESET_LGW_FILEPATH']
-SX1302_RESET_LGW_FILEPATH = os.environ['SX1302_RESET_LGW_FILEPATH']
+# The same reset is being used for both sx1301 and sx1302
+RESET_LGW_FILEPATH = os.environ['RESET_LGW_FILEPATH']
 # Directory the python script will be run from.
 # global_conf.json will also be copied here
 ROOT_DIR = os.environ['ROOT_DIR']
@@ -70,8 +70,7 @@ def validate_env():
         BALENA_APP=%s\n\
         DIAGNOSTICS_FILEPATH=%s\n\
         AWAIT_SYSTEM_SLEEP_SECONDS=%s\n\
-        SX1301_RESET_LGW_FILEPATH=%s\n\
-        SX1302_RESET_LGW_FILEPATH=%s\n\
+        RESET_LGW_FILEPATH=%s\n\
         UTIL_CHIP_ID_FILEPATH=%s\n\
         ROOT_DIR=%s\n\
         SX1302_LORA_PKT_FWD_FILEPATH=%s\n\
@@ -79,8 +78,8 @@ def validate_env():
             (VARIANT, REGION_OVERRIDE, REGION_FILEPATH,  # noqa E128
              SX1301_REGION_CONFIGS_DIR, SX1302_REGION_CONFIGS_DIR, SENTRY_KEY,
              BALENA_ID, BALENA_APP, DIAGNOSTICS_FILEPATH,
-             AWAIT_SYSTEM_SLEEP_SECONDS, SX1301_RESET_LGW_FILEPATH,
-             SX1302_RESET_LGW_FILEPATH, UTIL_CHIP_ID_FILEPATH, ROOT_DIR,
+             AWAIT_SYSTEM_SLEEP_SECONDS, RESET_LGW_FILEPATH,
+             UTIL_CHIP_ID_FILEPATH, ROOT_DIR,
              SX1302_LORA_PKT_FWD_FILEPATH, SX1301_LORA_PKT_FWD_DIR))
 
 
@@ -91,8 +90,7 @@ def start():
                            BALENA_ID, BALENA_APP,
                            DIAGNOSTICS_FILEPATH,
                            AWAIT_SYSTEM_SLEEP_SECONDS,
-                           SX1301_RESET_LGW_FILEPATH,
-                           SX1302_RESET_LGW_FILEPATH,
+                           RESET_LGW_FILEPATH,
                            UTIL_CHIP_ID_FILEPATH, ROOT_DIR,
                            SX1302_LORA_PKT_FWD_FILEPATH,
                            SX1301_LORA_PKT_FWD_DIR)

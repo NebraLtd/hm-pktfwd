@@ -2,6 +2,7 @@ import json
 import subprocess
 import sentry_sdk
 import logging
+import os
 from time import sleep
 from shutil import copyfile
 from tenacity import retry, wait_fixed, stop_after_attempt, before_sleep_log
@@ -49,23 +50,12 @@ def await_system_ready(sleep_seconds):
     LOGGER.debug("System now ready")
 
 
-def run_reset_lgw(is_sx1302, sx1301_reset_lgw_filepath,
-                  sx1302_reset_lgw_filepath, reset_lgw_pin):
+def run_reset_lgw(reset_lgw_filepath):
     """
     Invokes reset_lgw.sh script with the reset pin value.
     """
-    # Use the correct reset depending on chip version
-    reset_lgw_filepath = sx1301_reset_lgw_filepath
-    if is_sx1302:
-        reset_lgw_filepath = sx1302_reset_lgw_filepath
-
-    # reset_lgw script is expecting a string, not an int
-    reset_lgw_pin_str = str(reset_lgw_pin)
-    LOGGER.debug("Executing %s with reset pin %s" %
-                 (reset_lgw_filepath, reset_lgw_pin_str))
-
-    subprocess.run([reset_lgw_filepath, "stop", reset_lgw_pin_str])
-    subprocess.run([reset_lgw_filepath, "start", reset_lgw_pin_str])
+    subprocess.run([reset_lgw_filepath, "stop"])
+    subprocess.run([reset_lgw_filepath, "start"])
 
 
 def is_concentrator_sx1302(util_chip_id_filepath, spi_bus):
@@ -154,18 +144,15 @@ def replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
 def retry_start_concentrator(is_sx1302, spi_bus,
                              sx1302_lora_pkt_fwd_filepath,
                              sx1301_lora_pkt_fwd_dir,
-                             sx1301_reset_lgw_filepath,
-                             sx1302_reset_lgw_filepath, reset_lgw_pin):
+                             reset_lgw_filepath):
     """
     Retry to start lora_pkt_fwd for the corresponding concentrator model.
-    Runs the reset_lgw script before every attempt.
     """
-    run_reset_lgw(is_sx1302, sx1301_reset_lgw_filepath,
-                  sx1302_reset_lgw_filepath, reset_lgw_pin)
-
     if is_sx1302:
+        # sx1302_lora_pkt_fwd_filepath calls reset_lgw
         subprocess.run(sx1302_lora_pkt_fwd_filepath)
     else:
+        run_reset_lgw(reset_lgw_filepath)
         sx1301_lora_pkt_fwd_filepath = "%s/lora_pkt_fwd_%s" % \
                                         (sx1301_lora_pkt_fwd_dir, spi_bus)
         subprocess.run(sx1301_lora_pkt_fwd_filepath)

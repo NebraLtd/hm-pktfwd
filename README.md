@@ -9,6 +9,16 @@ hm-pktfwd builds off three other repos which each built a portion of the code re
 - [packet_forwarder](https://github.com/NebraLtd/packet_forwarder)
 - [sx1302_hal](https://github.com/NebraLtd/sx1302_hal)
 
+## reset_lgw.sh
+`reset_lgw.sh` is a shared tool that is used on all concentrator chip versions.
+On sx1301 chips, [its is recommended](https://github.com/NebraLtd/lora_gateway#31-reset_lgwsh) that the script is run before each time the concentrator is started.
+On chips that use sx1302_hal, the reset script is [run automatically](https://github.com/NebraLtd/sx1302_hal/blob/3d73e6af43535f700ff7b6c2b49cc79d388cd70f/packet_forwarder/src/lora_pkt_fwd.c#L1656-L1662) when the concentrator starts and is expected to be located in the same directory as the `lora_pkt_fwd` module.
+
+reset_lgw is used by all concentrators, and inspired by the [upstream](https://github.com/NebraLtd/lora_gateway/blob/971c52e3e0f953102c0b057c9fff9b1df8a84d66/reset_lgw.sh)
+[versions](https://github.com/NebraLtd/sx1302_hal/blob/6324b7a568ee24dbd9c4da64df69169a22615311/tools/reset_lgw.sh).
+That said, it is different from the originals, context specific to hm-pktfwd, and moved to this repo to avoid confusion about its intention.
+Additional context [here](https://github.com/NebraLtd/sx1302_hal/pull/1#discussion_r733253225).
+
 ## Supported Region Plans
 
 You can typically find the exact region plan you need to use at [What Helium Region](https://whatheliumregion.xyz/) or on the [Helium Miner GitHub repo](https://github.com/helium/miner/blob/master/priv/countries_reg_domains.csv) however the table below provides a rough guide...
