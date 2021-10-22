@@ -5,7 +5,7 @@ import logging
 import os
 from time import sleep
 from shutil import copyfile
-from tenacity import retry, wait_fixed, stop_after_attempt, before_sleep_log
+from tenacity import retry, wait_fixed, before_sleep_log
 from hm_pyhelper.logger import get_logger, LOGLEVEL
 from pktfwd.config.region_config_filenames import REGION_CONFIG_FILENAMES
 
@@ -13,8 +13,8 @@ from pktfwd.config.region_config_filenames import REGION_CONFIG_FILENAMES
 LOGGER = get_logger(__name__)
 LOGLEVEL_INT = getattr(logging, LOGLEVEL)
 # Number of seconds to sleep between lora_pkt_fwd start attempts.
-# Also the number of seconds to wait before attempts at updating the diagnostics value.
-LORA_PKT_FWD_RETRY_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_RETRY_SLEEP_SECONDS', '2'))
+# Also num secs to wait before attempts at updating the diagnostics value.
+LORA_PKT_FWD_RETRY_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_RETRY_SLEEP_SECONDS', '2'))  # noqa: E501
 
 
 def init_sentry(sentry_key, balena_id, balena_app):
@@ -156,7 +156,7 @@ def retry_start_concentrator(is_sx1302, spi_bus,
         # sx1302 automatically resets before starting
         run_reset_lgw(reset_lgw_filepath)
         lora_pkt_fwd_filepath = "%s/lora_pkt_fwd_%s" % \
-                                        (sx1301_lora_pkt_fwd_dir, spi_bus)
+                                (sx1301_lora_pkt_fwd_dir, spi_bus)
 
     lora_pkt_fwd_proc = subprocess.Popen([lora_pkt_fwd_filepath])
     lora_pkt_fwd_proc_is_running = True

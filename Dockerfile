@@ -4,7 +4,7 @@
 
 ####################################################################################################
 ########################### Stage: PktFwd Python App Builder #######################################
-FROM balenalib/raspberry-pi-debian:buster-build as pktfwd-builder
+FROM balenalib/raspberry-pi-debian-python:buster-build-20210705 as pktfwd-builder
 
 # Variables used internally to this stage
 ENV INPUT_DIR=/opt/input
@@ -14,27 +14,14 @@ ENV OUTPUT_DIR=/opt/output/pktfwd-dependencies
 
 WORKDIR "$INPUT_DIR"
 
-# Install python3 and pip3
-# hadolint ignore=DL3008
-RUN apt-get update && \
-    apt-get -y install --no-install-recommends \
-        python3=3.7.3-1 \
-        python3-pip=18.1-5+rpt1 && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
 # Copy python dependencies for `pip3 install` later
 COPY requirements.txt requirements.txt
 
 RUN pip3 install --target="$OUTPUT_DIR" --no-cache-dir -r requirements.txt
-# TODO remove once published
-RUN pip3 install setuptools wheel
-RUN pip3 install --target="$OUTPUT_DIR" git+https://github.com/NebraLtd/hm-pyhelper@marvinmarnold/fix-logger-packaging --upgrade --no-cache-dir
 
 ###################################################################################################
 ################################## Stage: runner ##################################################
-FROM balenalib/raspberry-pi-debian:buster-run as pktfwd-runner
+FROM balenalib/raspberry-pi-debian-python:buster-run-20210705 as pktfwd-runner
 
 ENV ROOT_DIR=/opt
 
@@ -74,11 +61,8 @@ COPY --from=nebraltd/sx1302_hal:e8533b93e76c5a04075de8905ba0c7e93434776c "$SX130
 # Copy pktfwd python app dependencies
 COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUT_DIR" "$PYTHON_DEPENDENCIES_DIR"
 
-# hadolint ignore=DL3008
-# Install python3 then cleanup
-RUN apt-get update && \
-    apt-get -y install --no-install-recommends python3=3.7.3-1 && \
-    apt-get autoremove -y && \
+# Cleanup
+RUN apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
