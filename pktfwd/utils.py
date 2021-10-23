@@ -43,8 +43,6 @@ def write_diagnostics(diagnostics_filepath, is_running):
 def await_system_ready(sleep_seconds):
     """
     Sleep before starting core functions.
-    TODO: Get more information about why.
-    Original code: https://github.com/NebraLtd/hm-pktfwd/blob/5a0178341e69ecbf6b1dbc8463f6bd1231e9e657/files/configurePktFwd.py#L77  # noqa: E501
     """
     LOGGER.debug("Waiting %s seconds for systems to be ready" % sleep_seconds)
     sleep(sleep_seconds)
