@@ -43,6 +43,33 @@ Please note:
 | --- | --- |
 | CN779 | NOT YET SUPPORTED |
 
+## Customization
+
+The following environment variables control various aspects of the program's operation.
+
+|Variable|Default|Required|Description|
+| --- | --- | --- | --- |
+| VARIANT| - | Yes | [See variants](https://github.com/NebraLtd/hm-pyhelper/blob/f8b2d8ceb90cfcd1da658a73e3741cc6de2ff1ff/hm_pyhelper/hardware_definitions.py#L1) |
+| SX1301_REGION_CONFIGS_DIR | - | Yes | Path to [sx1301 configs](https://github.com/NebraLtd/hm-pktfwd/tree/900925b5bb3eab6c51cdabe24a59fede3fc85fe5/pktfwd/config/lora_templates_sx1301) |
+| SX1302_REGION_CONFIGS_DIR | - | Yes | Path to [sx1302 configs](https://github.com/NebraLtd/hm-pktfwd/tree/900925b5bb3eab6c51cdabe24a59fede3fc85fe5/pktfwd/config/lora_templates_sx1302) |
+| UTIL_CHIP_ID_FILEPATH | - | Yes | Path to [chip_id](https://github.com/NebraLtd/sx1302_hal/tree/69811057222f6f9cf8929ebfdb7fc6e36cc2618d/util_chip_id |
+| RESET_LGW_FILEPATH | - | Yes | Path to [reset.sh](https://github.com/NebraLtd/hm-pktfwd/blob/900925b5bb3eab6c51cdabe24a59fede3fc85fe5/reset_lgw.sh). The same file is used for all sx130x versions. |
+| ROOT_DIR | - | Yes | Directory the app will be run from. Should be the same location. `global_conf.json` will also be copied here. |
+| SX1302_LORA_PKT_FWD_FILEPATH | - | Yes | Path to built [sx1302 lora_pkt_fwd](https://github.com/NebraLtd/sx1302_hal/blob/69811057222f6f9cf8929ebfdb7fc6e36cc2618d/packet_forwarder/src/lora_pkt_fwd.c) executable. |
+| SX1301_LORA_PKT_FWD_DIR | - | Yes | Directory that contains [sx1301 lora_pkt_fwd](https://github.com/NebraLtd/packet_forwarder/tree/e8f24fe37ba555e5ad1ddf8eed26d0136f30f8de/lora_pkt_fwd) executables for all SPI buses. |
+| LORA_PKT_FWD_BEFORE_CHECK_SLEEP_SECONDS | 5 | No | Duration after starting lora_pkt_fwd before establishing if it started successfully. |
+| LORA_PKT_FWD_AFTER_SUCCESS_SLEEP_SECONDS | 30 | No | Duration to poll status after concentrator starts successfully. |
+| LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS | 2 | No | Duration to wait before restarting when concentrator exits with 0. If it exits with code greater than 0, program exits and container restarts. |
+| LOGLEVEL | DEBUG | No | TRACE, DEBUG, INFO, WARN, etc. |
+| REGION_FILEPATH | /var/pktfwd/region | No | Path where hm-miner [writes the region](https://github.com/NebraLtd/hm-miner/blob/8819d5439dc23b45a905ff126078aa59c5be3de8/gen-region.sh#L9). |
+| DIAGNOSTICS_FILEPATH | /var/pktfwd/diagnostics | No | File containing "true" or "false" for whether lora_pkt_fwd is successfully running or not. |
+| AWAIT_SYSTEM_SLEEP_SECONDS | 5 | No | How long [app sleeps](https://github.com/NebraLtd/hm-pktfwd/issues/63) before starting concentrator. |
+| SENTRY_KEY | False | No | Key for Sentry. Sentry inactive if key is False. |
+| REGION_OVERRIDE | False | No | Region override. eg `US915`. |
+| BALENA_ID | From Balena | No | Only used with Sentry. |
+| BALENA_APP_NAME | From Balena | No | Only used with Sentry. |
+
+
 ## Building
 
 ### Pre built containers
