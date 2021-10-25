@@ -14,8 +14,9 @@ LOGGER = get_logger(__name__)
 LOGLEVEL_INT = getattr(logging, LOGLEVEL)
 # Number of seconds to sleep between lora_pkt_fwd start attempts.
 # Also num secs to wait before attempts at updating the diagnostics value.
-LORA_PKT_FWD_RETRY_START_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_RETRY_START_SLEEP_SECONDS', '2'))  # noqa: E501
-LORA_PKT_FWD_RUNNING_POLL_SECONDS = int(os.getenv('LORA_PKT_FWD_RUNNING_POLL_SECONDS', '30'))  # noqa: E501
+LORA_PKT_FWD_BEFORE_CHECK_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_BEFORE_CHECK_SLEEP_SECONDS', '5'))  # noqa: E501
+LORA_PKT_FWD_AFTER_SUCCESS_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_AFTER_SUCCESS_SLEEP_SECONDS', '30'))  # noqa: E501
+LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS', '2'))  # noqa: E501
 
 
 def init_sentry(sentry_key, balena_id, balena_app):
@@ -138,7 +139,7 @@ def replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
         json.dump(new_global_conf, global_config_file)
 
 
-@retry(wait=wait_fixed(LORA_PKT_FWD_RETRY_START_SLEEP_SECONDS),
+@retry(wait=wait_fixed(LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS),
        before_sleep=before_sleep_log(LOGGER, LOGLEVEL_INT))
 def retry_start_concentrator(is_sx1302, spi_bus,
                              sx1302_lora_pkt_fwd_filepath,
@@ -159,6 +160,7 @@ def retry_start_concentrator(is_sx1302, spi_bus,
 
     lora_pkt_fwd_proc = subprocess.Popen([lora_pkt_fwd_filepath])
     lora_pkt_fwd_proc_is_running = True
+    sleep(LORA_PKT_FWD_BEFORE_CHECK_SLEEP_SECONDS)
 
     while lora_pkt_fwd_proc_is_running:
         lora_pkt_fwd_proc_returncode = lora_pkt_fwd_proc.poll()
@@ -167,7 +169,7 @@ def retry_start_concentrator(is_sx1302, spi_bus,
 
         # lora_pkt_fwd is running, sleep then poll again.
         if lora_pkt_fwd_proc_returncode is None:
-            sleep(LORA_PKT_FWD_RUNNING_POLL_SECONDS)
+            sleep(LORA_PKT_FWD_AFTER_SUCCESS_SLEEP_SECONDS)
 
         # lora_pkt_fwd exited without error. Attempt to restart the process
         # by throwing an exception, which will trigger retry.
