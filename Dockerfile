@@ -59,7 +59,7 @@ COPY --from=nebraltd/packet_forwarder:e8f24fe37ba555e5ad1ddf8eed26d0136f30f8de "
 
 # Copy sx1302 chip_id, reset_lgw, and lora_pkt_fwd
 # hadolint ignore=DL3022
-COPY --from=nebraltd/sx1302_hal:69811057222f6f9cf8929ebfdb7fc6e36cc2618d "$SX1302_HAL_OUTPUT_DIR" "$SX1302_DIR"
+COPY --from=nebraltd/sx1302_hal:bdb23d6ea715f925b53ebf5fe6c8e63e31094437 "$SX1302_HAL_OUTPUT_DIR" "$SX1302_DIR"
 
 # Copy pktfwd python app dependencies
 COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUT_DIR" "$PYTHON_DEPENDENCIES_DIR"
