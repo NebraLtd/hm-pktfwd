@@ -10,5 +10,17 @@ REGION_CONFIG_FILENAMES = {
     "IN865": "IN-global_conf.json",
     "KR920": "KR-global_conf.json",
     "RU864": "RU-global_conf.json",
-    "US915": "US-global_conf.json"
+    "US915": "US-global_conf.json",
+    "region_as923_1": "AS923-1-global_conf.json",
+    "region_as923_2": "AS923-2-global_conf.json",
+    "region_as923_3": "AS923-3-global_conf.json",
+    "region_as923_4": "AS923-4-global_conf.json",
+    "region_au915": "AU-global_conf.json",
+    "region_cn470": "CN-global_conf.json",
+    "region_eu433": "EU433-global_conf.json",
+    "region_eu868": "EU-global_conf.json",
+    "region_in865": "IN-global_conf.json",
+    "region_kr920": "KR-global_conf.json",
+    "region_ru864": "RU-global_conf.json",
+    "region_us915": "US-global_conf.json"
 }
