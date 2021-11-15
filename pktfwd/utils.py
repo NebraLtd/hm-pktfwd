@@ -68,7 +68,7 @@ def is_concentrator_sx1302(util_chip_id_filepath, spi_bus):
 
     try:
         subprocess.run(util_chip_id_cmd, capture_output=True,
-                       text=True, check=True)
+                       text=True, check=True).stdout
         return True
     # CalledProcessError raised if there is a non-zero exit code
     # https://docs.python.org/3/library/subprocess.html#using-the-subprocess-module
@@ -83,13 +83,13 @@ def get_region_filename(region):
     return REGION_CONFIG_FILENAMES[region]
 
 
-def update_global_conf(is_sx1302, root_dir, sx1301_region_configs_dir,
+def update_global_conf(is_concentrator_sx1302, root_dir, sx1301_region_configs_dir,
                        sx1302_region_configs_dir, region, spi_bus):
     """
     Replace global_conf.json with the configuration necessary given
     the concentrator chip type, region, and spi_bus.
     """
-    if is_sx1302:
+    if is_concentrator_sx1302:
         replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
                                                  region, spi_bus)
     else:
@@ -141,7 +141,7 @@ def replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
 
 @retry(wait=wait_fixed(LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS),
        before_sleep=before_sleep_log(LOGGER, LOGLEVEL_INT))
-def retry_start_concentrator(is_sx1302, spi_bus,
+def retry_start_concentrator(is_concentrator_sx1302, spi_bus,
                              sx1302_lora_pkt_fwd_filepath,
                              sx1301_lora_pkt_fwd_dir,
                              reset_lgw_filepath,
@@ -151,7 +151,7 @@ def retry_start_concentrator(is_sx1302, spi_bus,
     """
     lora_pkt_fwd_filepath = sx1302_lora_pkt_fwd_filepath
 
-    if not is_sx1302:
+    if not is_concentrator_sx1302:
         # sx1301 must explicitly reset,
         # sx1302 automatically resets before starting
         run_reset_lgw(reset_lgw_filepath)
