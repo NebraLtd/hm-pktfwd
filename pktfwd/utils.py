@@ -75,7 +75,7 @@ def is_concentrator_sx1302(util_chip_id_filepath, spi_bus):
     except subprocess.CalledProcessError:
         return False
     except Exception:
-        pass   
+        pass
 
 
 def get_region_filename(region):
@@ -92,9 +92,11 @@ def update_global_conf(is_sx1302, root_dir, sx1301_region_configs_dir,
     the concentrator chip type, region, and spi_bus.
     """
     if is_sx1302:
+        LOGGER.debug("SX1302 / SX1303 Detected")
         replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
                                                  region, spi_bus)
     else:
+        LOGGER.debug("No chip EUI. Assume SX1301")
         replace_sx1301_global_conf_with_regional(root_dir,
                                                  sx1301_region_configs_dir,
                                                  region)
