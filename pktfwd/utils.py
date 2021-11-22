@@ -89,10 +89,12 @@ def update_global_conf(is_sx1302, root_dir, sx1301_region_configs_dir,
                        sx1302_region_configs_dir, region, spi_bus):
     """
     Replace global_conf.json with the configuration necessary given
-    the concentrator chip type, region, and spi_bus.
+    the concentrator chip type, region, and spi_bus. Also copies the
+    local_conf.json to the correct location
     """
     if is_sx1302:
-        replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
+        replace_sx1302_global_conf_with_regional(root_dir,
+                                                 sx1302_region_configs_dir,
                                                  region, spi_bus)
     else:
         replace_sx1301_global_conf_with_regional(root_dir,
@@ -105,40 +107,69 @@ def replace_sx1301_global_conf_with_regional(root_dir,
                                              region):
     """
     Copy the regional configuration file to global_conf.json
+    and copy the local_conf.json to the correct locaion
     """
     region_config_filepath = "%s/%s" % \
                              (sx1301_region_configs_dir,
                               get_region_filename(region))
 
+    old_local_config_filepath = "%s/%s" % \
+                                (sx1301_region_configs_dir,
+                                 "local_conf.json")
+
     global_config_filepath = "%s/%s" % (root_dir, "global_conf.json")
-    LOGGER.debug("Copying SX1301 conf from %s to %s" %
+    local_config_filepath = "%s/%s" % (root_dir, "local_conf.json")
+    LOGGER.debug("Copying SX1301 global conf from %s to %s" %
                  (region_config_filepath, global_config_filepath))
     copyfile(region_config_filepath, global_config_filepath)
+    LOGGER.debug("Copying SX1301 local conf from %s to %s" %
+                 (old_local_config_filepath, local_config_filepath))
+    copyfile(old_local_config_filepath, local_config_filepath)
 
 
-def replace_sx1302_global_conf_with_regional(sx1302_region_configs_dir,
+def replace_sx1302_global_conf_with_regional(root_dir,
+                                             sx1302_region_configs_dir,
                                              region, spi_bus):
     """
     Parses the regional configuration file in order to make changes
-    and save them to global_conf.json
+    and save them to global_conf.json and copies the local_conf.json
+    to the correct locaion
     """
     # Write the configuration files
     region_config_filepath = "%s/%s" % \
                              (sx1302_region_configs_dir,
                               get_region_filename(region))
 
+    old_local_config_filepath = "%s/%s" % \
+                                (sx1302_region_configs_dir,
+                                 "local_conf.json")
+
     global_config_filepath = "%s/%s" % \
-                             (sx1302_region_configs_dir,
+                             (root_dir,
                               "global_conf.json")
+
+    local_config_filepath = "%s/%s" % \
+                            (root_dir,
+                             "local_conf.json")
 
     with open(region_config_filepath) as region_config_file:
         new_global_conf = json.load(region_config_file)
 
+    LOGGER.debug("Injecting SPI bus %s into global conf" %
+                 (spi_bus))
+
     # Inject SPI Bus
     new_global_conf['SX130x_conf']['com_path'] = "/dev/%s" % spi_bus
 
+    LOGGER.debug("Saving SX1302 global conf from %s to %s with spi bus %s" %
+                 (region_config_filepath, global_config_filepath, spi_bus))
+
     with open(global_config_filepath, 'w') as global_config_file:
         json.dump(new_global_conf, global_config_file)
+
+    LOGGER.debug("Copying SX1302 local conf from %s to %s" %
+                 (old_local_config_filepath, local_config_filepath))
+    copyfile(old_local_config_filepath, local_config_filepath)
 
 
 @retry(wait=wait_fixed(LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS),
