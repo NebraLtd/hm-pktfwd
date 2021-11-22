@@ -68,11 +68,13 @@ def is_concentrator_sx1302(util_chip_id_filepath, spi_bus):
 
     try:
         subprocess.run(util_chip_id_cmd, capture_output=True,
-                       text=True, check=True).stdout
+                       text=True, check=True)
+        LOGGER.debug("SX1302 / SX1303 detected. util_chip_id script exited without error.")
         return True
     # CalledProcessError raised if there is a non-zero exit code
     # https://docs.python.org/3/library/subprocess.html#using-the-subprocess-module
     except Exception:
+        LOGGER.exception("SX1301 detected. util_chip_id script exited with error.")
         return False
 
 
