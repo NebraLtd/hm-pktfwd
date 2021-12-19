@@ -55,7 +55,7 @@ COPY reset_lgw.sh "$RESET_LGW_FILEPATH"
 
 # Copy sx1301 lora_pkt_fwd_SPI_BUS
 # hadolint ignore=DL3022
-COPY --from=nebraltd/packet_forwarder:e8f24fe37ba555e5ad1ddf8eed26d0136f30f8de "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
+COPY --from=nebraltd/packet_forwarder:b0e1c24414e1564a1d01328b2109e1accb181f97 "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
 
 # Copy sx1302 chip_id, reset_lgw, and lora_pkt_fwd
 # hadolint ignore=DL3022
