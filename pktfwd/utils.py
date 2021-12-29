@@ -73,9 +73,12 @@ def is_concentrator_sx1302(util_chip_id_filepath, spi_bus):
         return True
     # CalledProcessError raised if there is a non-zero exit code
     # https://docs.python.org/3/library/subprocess.html#using-the-subprocess-module
+    except subprocess.CalledProcessError as e:
+        LOGGER.warning(e)
     except Exception:
         LOGGER.exception("SX1301 detected. util_chip_id script exited with error.")
-        return False
+
+    return False
 
 
 def get_region_filename(region):
