@@ -19,6 +19,14 @@ LORA_PKT_FWD_AFTER_SUCCESS_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_AFTER_SUC
 LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS', '2'))  # noqa: E501
 
 
+class LoraPacketForwarderStopException(Exception):
+    pass
+
+
+class LoraPacketForwarderStopWithStatusException(Exception):
+    pass
+
+
 def init_sentry(sentry_key, balena_id, balena_app):
     """
     Initialize sentry with balena_app as environment and
@@ -210,10 +218,12 @@ def retry_start_concentrator(is_sx1302, spi_bus,
         # lora_pkt_fwd exited without error. Attempt to restart the process
         # by throwing an exception, which will trigger retry.
         elif lora_pkt_fwd_proc_returncode == 0:
-            raise Exception("lora_pkt_fwd stopped without error.")
+            raise LoraPacketForwarderStopException(
+                "lora_pkt_fwd stopped without error.")
 
         # lora_pkt_fwd exited with error. Restart the container by letting
         # the python application exit without error.
         else:
-            LOGGER.error("lora_pkt_fwd stopped with code=%s." %
-                         lora_pkt_fwd_proc_returncode)
+            raise LoraPacketForwarderStopWithStatusException(
+                "lora_pkt_fwd stopped with code=%s." %
+                lora_pkt_fwd_proc_returncode)
