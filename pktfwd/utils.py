@@ -19,6 +19,10 @@ LORA_PKT_FWD_AFTER_SUCCESS_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_AFTER_SUC
 LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS = int(os.getenv('LORA_PKT_FWD_AFTER_FAILURE_SLEEP_SECONDS', '2'))  # noqa: E501
 
 
+class LoraPacketForwarderStoppedWithoutError(Exception):
+    pass
+
+
 def init_sentry(sentry_key, balena_id, balena_app):
     """
     Initialize sentry with balena_app as environment and
@@ -73,9 +77,12 @@ def is_concentrator_sx1302(util_chip_id_filepath, spi_bus):
         return True
     # CalledProcessError raised if there is a non-zero exit code
     # https://docs.python.org/3/library/subprocess.html#using-the-subprocess-module
+    except subprocess.CalledProcessError as e:
+        LOGGER.debug(e)
     except Exception:
         LOGGER.exception("SX1301 detected. util_chip_id script exited with error.")
-        return False
+
+    return False
 
 
 def get_region_filename(region):
@@ -207,7 +214,8 @@ def retry_start_concentrator(is_sx1302, spi_bus,
         # lora_pkt_fwd exited without error. Attempt to restart the process
         # by throwing an exception, which will trigger retry.
         elif lora_pkt_fwd_proc_returncode == 0:
-            raise Exception("lora_pkt_fwd stopped without error.")
+            raise LoraPacketForwarderStoppedWithoutError(
+                "lora_pkt_fwd stopped without error.")
 
         # lora_pkt_fwd exited with error. Restart the container by letting
         # the python application exit without error.
