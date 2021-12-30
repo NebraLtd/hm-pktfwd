@@ -1,8 +1,7 @@
 import os
 from hm_pyhelper.logger import get_logger
 from pktfwd.pktfwd_app import PktfwdApp
-from utils import LoraPacketForwarderStopWithStatusException,\
-    LoraPacketForwarderStopException
+from utils import LoraPacketForwarderStoppedWithoutError
 
 
 LOGGER = get_logger(__name__)
@@ -99,8 +98,7 @@ def start():
 
     try:
         pktfwd_app.start()
-    except (LoraPacketForwarderStopException,
-            LoraPacketForwarderStopWithStatusException) as error:
+    except LoraPacketForwarderStoppedWithoutError as error:
         LOGGER.warning(error)
     except Exception:
         LOGGER.exception('__main__ failed for unknown reason')
