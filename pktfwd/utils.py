@@ -220,5 +220,5 @@ def retry_start_concentrator(is_sx1302, spi_bus,
         # lora_pkt_fwd exited with error. Restart the container by letting
         # the python application exit without error.
         else:
-            LOGGER.error("lora_pkt_fwd stopped with code=%s." %
+            LOGGER.warning("lora_pkt_fwd stopped with code=%s." %
                          lora_pkt_fwd_proc_returncode)
