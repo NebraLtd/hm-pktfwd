@@ -56,7 +56,7 @@ class PktfwdApp:
         # retry_start_concentrator will hang indefinitely while the
         # upstream packet_forwarder runs. The lines below will only
         # be reached if the concentrator exits unexpectedly.
-        LOGGER.error("Unable to start concentrator. Shutting down.")
+        LOGGER.warning("Shutting down concentrator.")
         self.stop()
 
     def prepare_to_start(self):

@@ -73,14 +73,16 @@ def is_concentrator_sx1302(util_chip_id_filepath, spi_bus):
     try:
         subprocess.run(util_chip_id_cmd, capture_output=True,
                        text=True, check=True)
-        LOGGER.debug("SX1302 / SX1303 detected. util_chip_id script exited without error.")
+        LOGGER.debug("SX1302 / SX1303 detected. \
+                     util_chip_id script exited without error.")
         return True
     # CalledProcessError raised if there is a non-zero exit code
     # https://docs.python.org/3/library/subprocess.html#using-the-subprocess-module
     except subprocess.CalledProcessError as e:
         LOGGER.debug(e)
     except Exception:
-        LOGGER.exception("SX1301 detected. util_chip_id script exited with error.")
+        LOGGER.exception("SX1301 detected.\
+                          util_chip_id script exited with error.")
 
     return False
 
@@ -215,10 +217,11 @@ def retry_start_concentrator(is_sx1302, spi_bus,
         # by throwing an exception, which will trigger retry.
         elif lora_pkt_fwd_proc_returncode == 0:
             raise LoraPacketForwarderStoppedWithoutError(
-                "lora_pkt_fwd stopped without error.")
+                                                         "lora_pkt_fwd stopped\
+                                                           without error.")
 
         # lora_pkt_fwd exited with error. Restart the container by letting
         # the python application exit without error.
         else:
-            LOGGER.error("lora_pkt_fwd stopped with code=%s." %
-                         lora_pkt_fwd_proc_returncode)
+            LOGGER.warning("lora_pkt_fwd stopped with code=%s." %
+                           lora_pkt_fwd_proc_returncode)
