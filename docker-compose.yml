@@ -1,0 +1,36 @@
+version: '3'
+services:
+  packet-forwarder:
+    image: hm-pktfwd:latest
+    restart: always
+    privileged: true
+    environment:
+      - FIRMWARE_VERSION=2022.01.29.0-8
+      - VARIANT=NEBHNT-HHRK4
+    volumes:
+      - /var/pktfwd:/var/pktfwd
+    devices:
+      - "/dev/spidev1.0:/dev/spidev32766.0"
+  helium-miner:
+    # image: nebraltd/hm-miner:arm64-ea828a3
+    image: quay.io/team-helium/miner:miner-arm64_2022.01.29.0_GA
+    expose:
+      - "1680"
+      - "4467"
+    ports:
+      - "44158:44158/tcp"
+    volumes:
+      - miner-storage:/var/data
+      - miner-log:/var/log/miner
+      - /var/pktfwd:/var/pktfwd
+    cap_add:
+      - SYS_RAWIO
+    devices:
+      - /dev/i2c-7:/dev/i2c-7
+    restart: on-failure
+    environment:
+      - FIRMWARE_VERSION=2022.01.29.0-8
+volumes:
+  miner-storage:
+  miner-log:
+

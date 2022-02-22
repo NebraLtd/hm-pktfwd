@@ -13,12 +13,12 @@
 # CONCENTRATOR_RESET_PIN can also be set by passing it in as the second parameter. Eg:
 #       ./reset_lgw.sh stop 23
 #       ./reset_lgw.sh start 23
-# 
+#
 # This script is inspired by the original upstream versions:
 #   - https://github.com/NebraLtd/lora_gateway/blob/971c52e3e0f953102c0b057c9fff9b1df8a84d66/reset_lgw.sh
 #   - https://github.com/NebraLtd/sx1302_hal/blob/6324b7a568ee24dbd9c4da64df69169a22615311/tools/reset_lgw.sh
 
-if [ -z "$2" ]; then 
+if [ -z "$2" ]; then
     echo "CONCENTRATOR_RESET_PIN parameter not passed in, using value from the environment (val=${CONCENTRATOR_RESET_PIN})"
 else
     CONCENTRATOR_RESET_PIN=$2
