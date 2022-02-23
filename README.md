@@ -95,3 +95,33 @@ docker buildx build --platform linux/arm64/v8 --progress=plain --target pktfwd-b
 docker image tag docker.io/DOCKERHUB_USER/hm-pktfwd DOCKERHUB_USER/hm-pktfwd:0.0.X
 docker push DOCKERHUB_USER/hm-pktfwd:0.0.X
 ```
+
+### Testing
+
+**Hardware Requirements:** An ARM64 based device.
+**Software Requirements:**
+
+* Docker ([instructions](https://docs.docker.com/engine/install/debian/))
+* Docker Compose ([instructions](https://docs.docker.com/compose/install/))
+* `git`
+
+With the dependencies installed, do the following:
+
+```
+$ git clone https://github.com/NebraLtd/hm-pktfwd.git
+$ cd hm-pktfwd
+$ docker build . -t hm-pktfwd
+```
+
+Once you've built the image, we need to do a bit of prep work to mock the environment:
+
+```
+$ mkdir -p /var/pktfwd
+$ echo region_eu868 | sudo tee -a /var/pktfwd/region
+```
+
+We're now finally ready to start up the containers using:
+
+```
+$ docker-compose up
+```
