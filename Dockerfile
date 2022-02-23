@@ -4,7 +4,7 @@
 
 ####################################################################################################
 ########################### Stage: PktFwd Python App Builder #######################################
-FROM balenalib/raspberry-pi-debian-python:buster-build-20211014 as pktfwd-builder
+FROM balenalib/rockpi-4b-rk3399-debian-python:buster-build-20211014 as pktfwd-builder
 
 # Variables used internally to this stage
 ENV INPUT_DIR=/opt/input
@@ -21,7 +21,7 @@ RUN pip3 install --target="$OUTPUT_DIR" --no-cache-dir -r requirements.txt
 
 ###################################################################################################
 ################################## Stage: runner ##################################################
-FROM balenalib/raspberry-pi-debian-python:buster-run-20211014 as pktfwd-runner
+FROM balenalib/rockpi-4b-rk3399-debian-python:buster-run-20211014 as pktfwd-runner
 
 ENV ROOT_DIR=/opt
 
@@ -55,7 +55,7 @@ COPY reset_lgw.sh "$RESET_LGW_FILEPATH"
 
 # Copy sx1301 lora_pkt_fwd_SPI_BUS
 # hadolint ignore=DL3022
-COPY --from=nebraltd/packet_forwarder:b0e1c24414e1564a1d01328b2109e1accb181f97 "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
+COPY --from=nebraltd/packet_forwarder:23e17807c95163e41f5766a5ec442103476e9e88 "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
 
 # Copy sx1302 chip_id, reset_lgw, and lora_pkt_fwd
 # hadolint ignore=DL3022
