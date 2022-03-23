@@ -182,11 +182,11 @@
 		}
 	},
 	"gateway_conf": {
-    "server_address": "helium-miner",
+    "server_address": "hm-gateway",
     "serv_port_up": 1680,
     "serv_port_down": 1680,
     "servers": [ {
-      "server_address": "helium-miner",
+      "server_address": "hm-gateway",
       "serv_port_up": 1680,
       "serv_port_down": 1680,
       "serv_enabled": true
