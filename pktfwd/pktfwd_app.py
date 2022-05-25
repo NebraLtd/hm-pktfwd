@@ -42,6 +42,8 @@ class PktfwdApp:
         is_sx1302 = is_concentrator_sx1302(self.util_chip_id_filepath,
                                            self.spi_bus)
 
+        concentrator = "sx1302/3" if is_sx1302 else "sx1301"
+        LOGGER.info(f"concentrator class : {concentrator}")
         update_global_conf(is_sx1302, self.root_dir,
                            self.sx1301_region_configs_dir,
                            self.sx1302_region_configs_dir, self.region,
