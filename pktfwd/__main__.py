@@ -40,7 +40,7 @@ DIAGNOSTICS_FILEPATH = os.getenv('DIAGNOSTICS_FILEPATH', '/var/pktfwd/diagnostic
 AWAIT_SYSTEM_SLEEP_SECONDS = int(os.getenv('AWAIT_SYSTEM_SLEEP_SECONDS', '5'))
 
 # If False, Sentry will not be enabled
-SENTRY_KEY = os.getenv('SENTRY_PKTFWD', False)
+SENTRY_DSN = os.getenv('SENTRY_PKTFWD', False)
 
 #
 # Optional
@@ -66,7 +66,7 @@ def validate_env():
         REGION_FILEPATH=%s\n\
         SX1301_REGION_CONFIGS_DIR=%s\n\
         SX1302_REGION_CONFIGS_DIR=%s\n\
-        SENTRY_KEY=%s\n\
+        SENTRY_DSN=%s\n\
         BALENA_ID=%s\n\
         BALENA_APP=%s\n\
         DIAGNOSTICS_FILEPATH=%s\n\
@@ -77,7 +77,7 @@ def validate_env():
         SX1302_LORA_PKT_FWD_FILEPATH=%s\n\
         SX1301_LORA_PKT_FWD_DIR=%s\n" %
             (VARIANT, REGION_OVERRIDE, REGION_FILEPATH,  # noqa E128
-             SX1301_REGION_CONFIGS_DIR, SX1302_REGION_CONFIGS_DIR, SENTRY_KEY,
+             SX1301_REGION_CONFIGS_DIR, SX1302_REGION_CONFIGS_DIR, SENTRY_DSN,
              BALENA_ID, BALENA_APP, DIAGNOSTICS_FILEPATH,
              AWAIT_SYSTEM_SLEEP_SECONDS, RESET_LGW_FILEPATH,
              UTIL_CHIP_ID_FILEPATH, ROOT_DIR,
@@ -87,7 +87,7 @@ def validate_env():
 def start():
     pktfwd_app = PktfwdApp(VARIANT, REGION_OVERRIDE, REGION_FILEPATH,
                            SX1301_REGION_CONFIGS_DIR,
-                           SX1302_REGION_CONFIGS_DIR, SENTRY_KEY,
+                           SX1302_REGION_CONFIGS_DIR, SENTRY_DSN,
                            BALENA_ID, BALENA_APP,
                            DIAGNOSTICS_FILEPATH,
                            AWAIT_SYSTEM_SLEEP_SECONDS,
