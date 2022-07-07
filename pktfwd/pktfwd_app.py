@@ -15,13 +15,13 @@ RESET_LGW_RESET_PIN_ENV_KEY = "CONCENTRATOR_RESET_PIN"
 class PktfwdApp:
     def __init__(self, variant, region_override, region_filepath,
                  sx1301_region_configs_dir, sx1302_region_configs_dir,
-                 sentry_key, balena_id, balena_app,
+                 sentry_dsn, balena_id, balena_app,
                  diagnostics_filepath, await_system_sleep_seconds,
                  reset_lgw_filepath,
                  util_chip_id_filepath, root_dir,
                  sx1302_lora_pkt_fwd_filepath, sx1301_lora_pkt_fwd_dir):  # noqa
 
-        init_sentry(sentry_key, balena_id, balena_app)
+        init_sentry(sentry_dsn, balena_id, balena_app)
         self.set_variant_attributes(variant)
         self.sx1301_region_configs_dir = sx1301_region_configs_dir
         self.sx1302_region_configs_dir = sx1302_region_configs_dir

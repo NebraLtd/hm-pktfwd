@@ -23,15 +23,19 @@ class LoraPacketForwarderStoppedWithoutError(Exception):
     pass
 
 
-def init_sentry(sentry_key, balena_id, balena_app):
+def init_sentry(sentry_dsn, balena_id, balena_app):
     """
-    Initialize sentry with balena_app as environment and
-    balenda_id as the user's id. If sentry_key is not set,
-    do nothing.
+    Initialize sentry with balena_id and balena_app as tag.
+    If sentry_dsn is not set, do nothing.
     """
-    if(sentry_key):
-        sentry_sdk.init(sentry_key, environment=balena_app)
-        sentry_sdk.set_user({"id": balena_id})
+
+    if not sentry_dsn:
+        return
+
+    sentry_sdk.init(sentry_dsn)
+
+    sentry_sdk.set_tag("balena_id", balena_id)
+    sentry_sdk.set_tag("balena_app", balena_app)
 
 
 def write_diagnostics(diagnostics_filepath, is_running):
