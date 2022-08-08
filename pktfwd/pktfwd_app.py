@@ -22,7 +22,7 @@ class PktfwdApp:
                  sx1302_lora_pkt_fwd_filepath, sx1301_lora_pkt_fwd_dir):  # noqa
 
         init_sentry(sentry_dsn, balena_id, balena_app)
-        self.set_variant_attributes(variant)
+        # self.set_variant_attributes(variant)
         self.sx1301_region_configs_dir = sx1301_region_configs_dir
         self.sx1302_region_configs_dir = sx1302_region_configs_dir
         self.region_override = region_override
@@ -39,8 +39,9 @@ class PktfwdApp:
         LOGGER.debug("STARTING PKTFWD")
         self.prepare_to_start()
 
-        is_sx1302 = is_concentrator_sx1302(self.util_chip_id_filepath,
-                                           self.spi_bus)
+        # is_sx1302 = is_concentrator_sx1302(self.util_chip_id_filepath,
+        #                                    self.spi_bus)
+        is_sx1302 = True
 
         update_global_conf(is_sx1302, self.root_dir,
                            self.sx1301_region_configs_dir,
@@ -65,7 +66,7 @@ class PktfwdApp:
         because it depends on the filesystem being available.
         """
         write_diagnostics(self.diagnostics_filepath, False)
-        await_spi_available(self.spi_bus)
+        # await_spi_available(self.spi_bus)
 
         self.region = retry_get_region(self.region_override,
                                        self.region_filepath)
