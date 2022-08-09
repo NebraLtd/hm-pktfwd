@@ -10,7 +10,7 @@ LOGGER = get_logger(__name__)
 #
 # Mandatory
 #
-VARIANT = os.environ['VARIANT']
+VARIANT = os.environ.get('VARIANT', 'x86')
 SX1301_REGION_CONFIGS_DIR = os.environ['SX1301_REGION_CONFIGS_DIR']
 SX1302_REGION_CONFIGS_DIR = os.environ['SX1302_REGION_CONFIGS_DIR']
 UTIL_CHIP_ID_FILEPATH = os.environ['UTIL_CHIP_ID_FILEPATH']
