@@ -47,7 +47,7 @@ SENTRY_DSN = os.getenv('SENTRY_PKTFWD', False)
 #
 
 # Overrides the region detected in $REGION_FILEPATH, if defined
-REGION_OVERRIDE = os.getenv('REGION_OVERRIDE', False)
+REGION_OVERRIDE = os.getenv('REGION_OVERRIDE', 'EU868')
 
 # Balena vars used with Sentry
 BALENA_ID = os.getenv('BALENA_DEVICE_UUID')
