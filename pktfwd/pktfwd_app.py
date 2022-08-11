@@ -39,8 +39,9 @@ class PktfwdApp:
         LOGGER.debug("STARTING PKTFWD")
         self.prepare_to_start()
 
-        is_sx1302 = is_concentrator_sx1302(self.util_chip_id_filepath,
-                                           self.spi_bus)
+        # is_sx1302 = is_concentrator_sx1302(self.util_chip_id_filepath,
+        #                                    self.spi_bus)
+        is_sx1302 = True
 
         update_global_conf(is_sx1302, self.root_dir,
                            self.sx1301_region_configs_dir,
@@ -65,7 +66,7 @@ class PktfwdApp:
         because it depends on the filesystem being available.
         """
         write_diagnostics(self.diagnostics_filepath, False)
-        await_spi_available(self.spi_bus)
+        # await_spi_available(self.spi_bus)
 
         self.region = retry_get_region(self.region_override,
                                        self.region_filepath)
@@ -81,12 +82,12 @@ class PktfwdApp:
 
     def set_variant_attributes(self, variant):
         self.variant = variant
-        self.variant_attributes = variant_definitions[self.variant]
-        self.reset_pin = self.variant_attributes['RESET']
+        self.variant_attributes = []
+        self.reset_pin = ''
         # reset_lgw.sh is called throughout this app without supplying
         # the reset pin as an argument. The script falls back to the
         # value in envvar RESET_LGW_RESET_PIN_ENV_KEY.
-        os.environ[RESET_LGW_RESET_PIN_ENV_KEY] = str(self.reset_pin)
-        self.spi_bus = self.variant_attributes['SPIBUS']
+        # os.environ[RESET_LGW_RESET_PIN_ENV_KEY] = str(self.reset_pin)
+        self.spi_bus = ''
         LOGGER.debug("Variant %s set with reset_pin %s and spi_bus %s" %
                      (self.variant, self.reset_pin, self.spi_bus))
