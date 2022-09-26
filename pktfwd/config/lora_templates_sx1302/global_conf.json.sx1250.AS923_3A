@@ -8,17 +8,17 @@
     "full_duplex": false,
     "fine_timestamp": {
         "enable": false,
-        "mode": "all_sf"
+        "mode": "all_sf" /* high_capacity or all_sf */
     },
     "radio_0": {
       "enable": true,
       "type": "SX1250",
-      "freq": 921700000,
+      "freq": 916900000,
       "rssi_offset": -215.4,
       "rssi_tcomp": {"coeff_a": 0, "coeff_b": 0, "coeff_c": 20.41, "coeff_d": 2162.56, "coeff_e": 0},
       "tx_enable": true,
-      "tx_freq_min": 921300000,
-      "tx_freq_max": 922900000,
+      "tx_freq_min": 915000000,
+      "tx_freq_max": 921000000,
       "tx_gain_lut":[
           {"rf_power": 12, "pa_gain": 1, "pwr_idx": 4},
           {"rf_power": 13, "pa_gain": 1, "pwr_idx": 5},
@@ -41,7 +41,7 @@
     "radio_1": {
       "enable": true,
       "type": "SX1250",
-      "freq": 922500000,
+      "freq": 917700000,
       "rssi_offset": -215.4,
       "rssi_tcomp": {"coeff_a": 0, "coeff_b": 0, "coeff_c": 20.41, "coeff_d": 2162.56, "coeff_e": 0},
       "tx_enable": false
@@ -60,26 +60,16 @@
             "chan_FSK":       {"enable": false, "radio": 1, "if":  300000, "bandwidth": 125000, "datarate": 50000}
   },
   "gateway_conf": {
-      "gateway_ID": "AA555A0000000000",
-      
-      "server_address": "helium-miner",
-      "serv_port_up": 1680,
-      "serv_port_down": 1680,
-      
-      "keepalive_interval": 10,
-      "stat_interval": 30,
-      "push_timeout_ms": 100,
-      
-      "forward_crc_valid": true,
-      "forward_crc_error": false,
-      "forward_crc_disabled": false
-  },
-
-  "debug_conf": {
-      "ref_payload":[
-          {"id": "0xCAFE1234"},
-          {"id": "0xCAFE2345"}
-      ],
-      "log_file": "loragw_hal.log"
+    "gps_i2c_path": "/dev/i2c-1",
+    "gateway_ID": "AA555A0000000000",
+    "server_address": "helium-miner",
+    "serv_port_up": 1680,
+    "serv_port_down": 1680,
+    "keepalive_interval": 10,
+    "stat_interval": 30,
+    "push_timeout_ms": 100,
+    "forward_crc_valid": true,
+    "forward_crc_error": false,
+    "forward_crc_disabled": false
   }
 }
