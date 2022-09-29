@@ -4,11 +4,11 @@
         "com_path": "/dev/spidev1.2",
         "lorawan_public": true,
         "clksrc": 0,
-        "antenna_gain": 0, /* antenna gain, in dBi */
+        "antenna_gain": 0,
         "full_duplex": false,
         "fine_timestamp": {
             "enable": false,
-            "mode": "all_sf" /* high_capacity or all_sf */
+            "mode": "all_sf"
         },
         "radio_0": {
             "enable": true,
@@ -47,55 +47,46 @@
             "tx_enable": false
         },
         "chan_multiSF_0": {
-            /* Channel 8, 903.900 Mhz */
             "enable": true,
             "radio": 0,
             "if": -400000
         },
         "chan_multiSF_1": {
-            /* Channel 9, 904.100 Mhz */
             "enable": true,
             "radio": 0,
             "if": -200000
         },
         "chan_multiSF_2": {
-            /* Channel 10, 904.300 Mhz */
             "enable": true,
             "radio": 0,
             "if": 0
         },
         "chan_multiSF_3": {
-            /* Channel 11, 904.500 Mhz */
             "enable": true,
             "radio": 0,
             "if": 200000
         },
         "chan_multiSF_4": {
-            /* Channel 12, 904.700 Mhz */
             "enable": true,
             "radio": 1,
             "if": -300000
         },
         "chan_multiSF_5": {
-            /* Channel 13, 904.900 Mhz */
             "enable": true,
             "radio": 1,
             "if": -100000
         },
         "chan_multiSF_6": {
-            /* Channel 14, 905.100 Mhz */
             "enable": true,
             "radio": 1,
             "if": 100000
         },
         "chan_multiSF_7": {
-            /* Channel 15, 905.300 Mhz */
             "enable": true,
             "radio": 1,
             "if": 300000
         },
         "chan_Lora_std": {
-            /* Channel 65 (fat channel), 912.6 Mhz */
             "enable": true,
             "radio": 0,
             "if": 300000,
@@ -103,7 +94,6 @@
             "spread_factor": 8
         },
         "chan_FSK": {
-            /* disabled */
             "enable": false,
             "radio": 0,
             "if": 300000,
@@ -114,15 +104,12 @@
     "gateway_conf": {
         "gps_i2c_path": "/dev/i2c-1",
         "gateway_ID": "AA555A0000000000",
-        /* change with default server address/ports */
         "server_address": "helium-miner",
         "serv_port_up": 1680,
         "serv_port_down": 1680,
-        /* adjust the following parameters for your network */
         "keepalive_interval": 10,
         "stat_interval": 30,
         "push_timeout_ms": 100,
-        /* forward only valid packets */
         "forward_crc_valid": true,
         "forward_crc_error": false,
         "forward_crc_disabled": false

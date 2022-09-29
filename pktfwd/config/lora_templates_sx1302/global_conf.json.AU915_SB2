@@ -8,7 +8,7 @@
     "full_duplex": false,
     "fine_timestamp": {
         "enable": false,
-        "mode": "all_sf" /* high_capacity or all_sf */
+        "mode": "all_sf"
     },
     "radio_0": {
       "enable": true,
