@@ -1,4 +1,4 @@
-0{
+{
 	"SX1301_conf": {
 		"lorawan_public": true,
 		"clksrc": 1,
