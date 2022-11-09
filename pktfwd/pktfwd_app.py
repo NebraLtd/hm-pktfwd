@@ -51,7 +51,8 @@ class PktfwdApp:
                                  self.sx1302_lora_pkt_fwd_filepath,
                                  self.sx1301_lora_pkt_fwd_dir,
                                  self.reset_lgw_filepath,
-                                 self.diagnostics_filepath)
+                                 self.diagnostics_filepath,
+                                 self.region_filepath)
 
         # retry_start_concentrator will hang indefinitely while the
         # upstream packet_forwarder runs. The lines below will only

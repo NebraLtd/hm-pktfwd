@@ -8,6 +8,7 @@ from shutil import copyfile
 from tenacity import retry, wait_fixed, before_sleep_log
 from hm_pyhelper.logger import get_logger, LOGLEVEL
 from pktfwd.config.region_config_filenames import REGION_CONFIG_FILENAMES
+from hm_pyhelper.miner_param import retry_get_region
 
 
 LOGGER = get_logger(__name__)
@@ -191,7 +192,8 @@ def retry_start_concentrator(is_sx1302, spi_bus,
                              sx1302_lora_pkt_fwd_filepath,
                              sx1301_lora_pkt_fwd_dir,
                              reset_lgw_filepath,
-                             diagnostics_filepath):
+                             diagnostics_filepath,
+                             region_filepath):
     """
     Retry to start lora_pkt_fwd for the corresponding concentrator model.
     """
@@ -204,6 +206,10 @@ def retry_start_concentrator(is_sx1302, spi_bus,
         lora_pkt_fwd_filepath = "%s/lora_pkt_fwd_%s" % \
                                 (sx1301_lora_pkt_fwd_dir, spi_bus)
 
+    old_region = retry_get_region(None, region_filepath)
+
+    LOGGER.debug("Region before starting concentrator %s" % old_region)
+
     lora_pkt_fwd_proc = subprocess.Popen([lora_pkt_fwd_filepath])
     lora_pkt_fwd_proc_is_running = True
     sleep(LORA_PKT_FWD_BEFORE_CHECK_SLEEP_SECONDS)
@@ -214,18 +220,27 @@ def retry_start_concentrator(is_sx1302, spi_bus,
         write_diagnostics(diagnostics_filepath, lora_pkt_fwd_proc_is_running)
 
         # lora_pkt_fwd is running, sleep then poll again.
-        if lora_pkt_fwd_proc_returncode is None:
+        if lora_pkt_fwd_proc_is_running:
             sleep(LORA_PKT_FWD_AFTER_SUCCESS_SLEEP_SECONDS)
 
         # lora_pkt_fwd exited without error. Attempt to restart the process
         # by throwing an exception, which will trigger retry.
         elif lora_pkt_fwd_proc_returncode == 0:
             raise LoraPacketForwarderStoppedWithoutError(
-                                                         "lora_pkt_fwd stopped\
-                                                           without error.")
+                "lora_pkt_fwd stopped without error.")
 
         # lora_pkt_fwd exited with error. Restart the container by letting
         # the python application exit without error.
         else:
             LOGGER.warning("lora_pkt_fwd stopped with code=%s." %
                            lora_pkt_fwd_proc_returncode)
+
+        # check if concentrator restart is needed. we depend on container
+        # restart to restart the concentrator with correct configuration.
+        # Thus we exit the application without error.
+        new_region = retry_get_region(None, region_filepath)
+        if old_region != new_region:
+            lora_pkt_fwd_proc.kill()
+            LOGGER.warning("concentrator exiting due to region plan change"
+                           f" old: {old_region} to new: {new_region}")
+            exit(0)
