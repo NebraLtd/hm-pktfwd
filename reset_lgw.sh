@@ -29,7 +29,7 @@ fi
 
 if [ -n "${SX125x_RESET_PIN_OVERRIDE+x}" ]; then
     echo "SX125x_RESET_PIN_OVERRIDE parameter found, using this value from the environment (val=${SX125x_RESET_PIN_OVERRIDE})"
-    SX125x_RESET_PIN=${SX1257x_RESET_PIN_OVERRIDE}
+    SX125x_RESET_PIN=${SX125x_RESET_PIN_OVERRIDE}
 fi
 
 WAIT_GPIO() {
