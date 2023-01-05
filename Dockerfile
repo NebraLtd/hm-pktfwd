@@ -4,7 +4,7 @@
 
 ####################################################################################################
 ########################### Stage: PktFwd Python App Builder #######################################
-FROM balenalib/raspberry-pi-debian-python:bookworm-build-20221215 as pktfwd-builder
+FROM balenalib/raspberry-pi-debian-python:bullseye-build-20221215 as pktfwd-builder
 
 # Variables used internally to this stage
 ENV INPUT_DIR=/opt/input
@@ -21,7 +21,7 @@ RUN pip3 install --target="$OUTPUT_DIR" --no-cache-dir -r requirements.txt
 
 ###################################################################################################
 ################################## Stage: runner ##################################################
-FROM balenalib/raspberry-pi-debian-python:bookworm-run-20221215 as pktfwd-runner
+FROM balenalib/raspberry-pi-debian-python:bullseye-run-20221215 as pktfwd-runner
 
 ENV ROOT_DIR=/opt
 
