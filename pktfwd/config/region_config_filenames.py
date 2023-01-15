@@ -1,3 +1,5 @@
+# Keys starting with region_* are for legacy miner compatibility
+# (miners that do not have up to date firmware)
 REGION_CONFIG_FILENAMES = {
     "AS923": "global_conf.json.AS923",
     "AS923_1": "global_conf.json.AS923_1",
