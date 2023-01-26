@@ -199,13 +199,13 @@
 		}
 	},
 	"gateway_conf": {
-    "server_address": "helium-miner",
-    "serv_port_up": 1680,
-    "serv_port_down": 1680,
+    "server_address": "multiplexer",
+    "serv_port_up": 1700,
+    "serv_port_down": 1700,
     "servers": [ {
-      "server_address": "helium-miner",
-      "serv_port_up": 1680,
-      "serv_port_down": 1680,
+      "server_address": "multiplexer",
+      "serv_port_up": 1700,
+      "serv_port_down": 1700,
       "serv_enabled": true
     } ],
 	"gps": false,
