@@ -67,10 +67,15 @@ COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUT_DIR" "$PYTHON_DEPENDENCIES_DI
 # Cleanup
 RUN apt-get autoremove -y && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /opt/nebra
 
 # Add python dependencies to PYTHONPATH
 ENV PYTHONPATH="${PYTHONPATH}:${PYTHON_DEPENDENCIES_DIR}"
 
+# Copy startup scripts
+COPY start_pktfwd.sh /opt/start_pktfwd.sh
+COPY setenv_pktfwd.sh /opt/nebra/setenv_pktfwd.sh
+
 # Run pktfwd/__main__.py
-ENTRYPOINT ["python3", "pktfwd"]
+ENTRYPOINT ["./start_pktfwd.sh"]
