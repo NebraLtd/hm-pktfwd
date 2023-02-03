@@ -1,6 +1,6 @@
 {
     "gateway_conf": {
-        "gateway_ID": "AA555A0000000000",
+        "gateway_ID": "0000{{ gateway_id }}",
 	       "description": "multiplexer",
 	        "servers": [
             {

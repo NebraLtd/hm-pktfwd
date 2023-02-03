@@ -6,9 +6,11 @@ import os
 from time import sleep
 from shutil import copyfile
 from tenacity import retry, wait_fixed, before_sleep_log
+from jinja2 import Template
 from hm_pyhelper.logger import get_logger, LOGLEVEL
 from pktfwd.config.region_config_filenames import REGION_CONFIG_FILENAMES
 from hm_pyhelper.miner_param import retry_get_region
+from hm_pyhelper.miner_param import get_ethernet_addresses
 
 
 LOGGER = get_logger(__name__)
@@ -116,6 +118,23 @@ def update_global_conf(is_sx1302, root_dir, sx1301_region_configs_dir,
                                                  region)
 
 
+def populate_local_conf_template(template_file):
+    mac_addrs = {'E0': '', 'W0': ''}
+    get_ethernet_addresses(mac_addrs)
+
+    mac_address = mac_addrs.get('E0')
+    if not mac_address:
+        mac_address = mac_addrs.get('W0')
+
+    gateway_id = mac_address.replace(':', '')
+    with open(template_file) as file_:
+        template = Template(file_.read())
+
+    rendered = template.render(gateway_id=gateway_id)
+    with open(template_file, "w") as file_:
+        file_.write(rendered)
+
+
 def replace_sx1301_global_conf_with_regional(root_dir,
                                              sx1301_region_configs_dir,
                                              region):
@@ -138,6 +157,7 @@ def replace_sx1301_global_conf_with_regional(root_dir,
     copyfile(region_config_filepath, global_config_filepath)
     LOGGER.debug("Copying SX1301 local conf from %s to %s" %
                  (old_local_config_filepath, local_config_filepath))
+    populate_local_conf_template(old_local_config_filepath)
     copyfile(old_local_config_filepath, local_config_filepath)
 
 
@@ -183,6 +203,7 @@ def replace_sx1302_global_conf_with_regional(root_dir,
 
     LOGGER.debug("Copying SX1302 local conf from %s to %s" %
                  (old_local_config_filepath, local_config_filepath))
+    populate_local_conf_template(old_local_config_filepath)
     copyfile(old_local_config_filepath, local_config_filepath)
 
 
