@@ -48,6 +48,14 @@ jobs:
           push: true
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=registry,ref=nebraltd/hm-pktfwd:buildcache
+          cache-to: type=registry,ref=nebraltd/hm-pktfwd:buildcache,mode=max
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Update repo description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
