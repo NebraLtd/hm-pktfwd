@@ -2,9 +2,22 @@
 # (C) Nebra Ltd 2021
 # Licensed under the MIT License.
 
+ARG BUILD_BOARD
+ARG BUILD_ARCH
+
+# Set up correct image paths
+ARG PKTFWD_PATH=nebraltd/packet_forwarder:$BUILD_ARCH-db794c0f2426ae0c63d4acbc8db8817078b744e5
+ARG SX1302_PATH=nebraltd/sx1302_hal:$BUILD_ARCH-b3f9da9a0ed70ffc7d06c98da033dfaaa75e222b
+
+# Pull the builds for later use
+# hadolint ignore=DL3006
+FROM $SX1302_PATH AS sx1302_hal
+# hadolint ignore=DL3006
+FROM $PKTFWD_PATH AS packet_forwarder
+
 ####################################################################################################
 ########################### Stage: PktFwd Python App Builder #######################################
-FROM balenalib/raspberry-pi-debian-python:bullseye-build-20221215 as pktfwd-builder
+FROM balenalib/"$BUILD_BOARD"-debian-python:bullseye-build-20221215 AS pktfwd-builder
 
 # Variables used internally to this stage
 ENV INPUT_DIR=/opt/input
@@ -21,7 +34,7 @@ RUN pip3 install --target="$OUTPUT_DIR" --no-cache-dir -r requirements.txt
 
 ###################################################################################################
 ################################## Stage: runner ##################################################
-FROM balenalib/raspberry-pi-debian-python:bullseye-run-20221215 as pktfwd-runner
+FROM balenalib/"$BUILD_BOARD"-debian-python:bullseye-run-20221215 AS pktfwd-runner
 
 ENV ROOT_DIR=/opt
 
@@ -55,11 +68,11 @@ COPY reset_lgw.sh "$RESET_LGW_FILEPATH"
 
 # Copy sx1301 lora_pkt_fwd_SPI_BUS
 # hadolint ignore=DL3022
-COPY --from=nebraltd/packet_forwarder:b0e1c24414e1564a1d01328b2109e1accb181f97 "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
+COPY --from=packet_forwarder "$SX1301_PACKET_FORWARDER_OUTPUT_DIR" "$SX1301_DIR"
 
 # Copy sx1302 chip_id, reset_lgw, and lora_pkt_fwd
 # hadolint ignore=DL3022
-COPY --from=nebraltd/sx1302_hal:9a72ce59c22b0434bdbaf9091542a7d8419bddee "$SX1302_HAL_OUTPUT_DIR" "$SX1302_DIR"
+COPY --from=sx1302_hal "$SX1302_HAL_OUTPUT_DIR" "$SX1302_DIR"
 
 # Copy pktfwd python app dependencies
 COPY --from=pktfwd-builder "$PKTFWD_BUILDER_OUTPUT_DIR" "$PYTHON_DEPENDENCIES_DIR"
