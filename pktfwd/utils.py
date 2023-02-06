@@ -194,7 +194,7 @@ def replace_sx1302_global_conf_with_regional(root_dir,
 
     merged_global_conf = dict(new_global_conf)
     merged_global_conf.update(local_conf)
-    
+
     LOGGER.debug("Injecting SPI bus %s into global conf" %
                  (spi_bus))
 
