@@ -42,10 +42,14 @@ else
     success_variant=1
 fi
 
-if [[ $success_freq != 1 || $success_variant != 1 ]]; then
-    echo "Error: Not all required parameters have been set. Container will be reset after 5 sec."
-    sleep 5     # sleep for some time before exiting and make the container restart. This would give diagnostics a chance to create necessary data
+if [[ $success_variant != 1 ]]; then
+    echo "Error: Required VARIANT parameter has not been set. Container will be reset after 10 sec."
+    sleep 10     # sleep for some time before exiting and make the container restart. This would give diagnostics a chance to create necessary data
     exit 1
+fi
+
+if [[ $success_freq != 1 ]]; then
+    echo "Warning: FREQ is not set for the device."
 fi
 
 echo "All required environment variables have been set."
