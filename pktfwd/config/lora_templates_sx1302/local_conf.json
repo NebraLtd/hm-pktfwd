@@ -6,7 +6,7 @@
         "fake_gps": true,
         "ref_latitude": 0,
         "ref_longitude": 0,
-        "ref_altitude": 0
+        "ref_altitude": 0,
 	"gps_i2c_path": "/dev/i2c-1",
         "server_address": "helium-miner",
         "serv_port_up": 1680,
