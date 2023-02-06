@@ -6,8 +6,8 @@ ARG BUILD_BOARD
 ARG BUILD_ARCH
 
 # Set up correct image paths
-ARG PKTFWD_PATH=nebraltd/packet_forwarder:$BUILD_ARCH-db794c0f2426ae0c63d4acbc8db8817078b744e5
-ARG SX1302_PATH=nebraltd/sx1302_hal:$BUILD_ARCH-b3f9da9a0ed70ffc7d06c98da033dfaaa75e222b
+ARG PKTFWD_PATH=nebraltd/packet_forwarder:$BUILD_ARCH-e1aca266845203824889cfcd869ea64de3129113
+ARG SX1302_PATH=nebraltd/sx1302_hal:$BUILD_ARCH-3760434a18e6ba47b695c22786195e57cc6b4c1c
 
 # Pull the builds for later use
 # hadolint ignore=DL3006
