@@ -1,20 +1,28 @@
 {
     "gateway_conf": {
         "gateway_ID": "0000{{ gateway_id }}",
-	       "description": "helium-miner",
-	        "servers": [
-            {
-                "serv_type": "semtech",
-                "server_address": "helium-miner",
-                "serv_port_up": 1680,
-                "serv_port_down": 1680,
-                "serv_enabled": true
-	    }
-	],
+	"description": "helium-miner",
 	"gps": false,
-  "fake_gps": true,
-  "ref_latitude": 0,
-  "ref_longitude": 0,
-  "ref_altitude": 0
+        "fake_gps": true,
+        "ref_latitude": 0,
+        "ref_longitude": 0,
+        "ref_altitude": 0,
+	"gps_i2c_path": "/dev/i2c-1",
+        "server_address": "helium-miner",
+        "serv_port_up": 1680,
+        "serv_port_down": 1680,
+        "keepalive_interval": 10,
+        "stat_interval": 30,
+        "push_timeout_ms": 100,
+        "forward_crc_valid": true,
+        "forward_crc_error": false,
+        "forward_crc_disabled": false
+    },
+    "debug_conf": {
+        "ref_payload":[
+            {"id": "0xCAFE1234"},
+            {"id": "0xCAFE2345"}
+        ],
+        "log_file": "loragw_hal.log"
     }
 }
