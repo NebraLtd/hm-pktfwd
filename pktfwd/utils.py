@@ -189,17 +189,23 @@ def replace_sx1302_global_conf_with_regional(root_dir,
     with open(region_config_filepath) as region_config_file:
         new_global_conf = json.load(region_config_file)
 
+    with open(old_local_config_filepath) as local_config_file:
+        local_conf = json.load(local_config_file)
+
+    merged_global_conf = dict(new_global_conf)
+    merged_global_conf.update(local_conf)
+    
     LOGGER.debug("Injecting SPI bus %s into global conf" %
                  (spi_bus))
 
     # Inject SPI Bus
-    new_global_conf['SX130x_conf']['com_path'] = "/dev/%s" % spi_bus
+    merged_global_conf['SX130x_conf']['com_path'] = "/dev/%s" % spi_bus
 
     LOGGER.debug("Saving SX1302 global conf from %s to %s with spi bus %s" %
                  (region_config_filepath, global_config_filepath, spi_bus))
 
     with open(global_config_filepath, 'w') as global_config_file:
-        json.dump(new_global_conf, global_config_file)
+        json.dump(merged_global_conf, global_config_file)
 
     LOGGER.debug("Copying SX1302 local conf from %s to %s" %
                  (old_local_config_filepath, local_config_filepath))
