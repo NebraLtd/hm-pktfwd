@@ -30,8 +30,7 @@ WORKDIR "$INPUT_DIR"
 # Copy python dependencies for `pip3 install` later
 COPY requirements.txt requirements.txt
 
-RUN pip3 install --target="$OUTPUT_DIR" --no-cache-dir -r requirements.txt \
-    --extra-index-url https://www.piwheels.org/simple
+RUN pip3 install --target="$OUTPUT_DIR" --no-cache-dir -r requirements.txt
 
 ###################################################################################################
 ################################## Stage: runner ##################################################
