@@ -47,46 +47,55 @@
             "tx_enable": false
         },
         "chan_multiSF_0": {
+            /* Channel 8, 903.900 Mhz */
             "enable": true,
             "radio": 0,
             "if": -400000
         },
         "chan_multiSF_1": {
+            /* Channel 9, 904.100 Mhz */
             "enable": true,
             "radio": 0,
             "if": -200000
         },
         "chan_multiSF_2": {
+            /* Channel 10, 904.300 Mhz */
             "enable": true,
             "radio": 0,
             "if": 0
         },
         "chan_multiSF_3": {
+            /* Channel 11, 904.500 Mhz */
             "enable": true,
             "radio": 0,
             "if": 200000
         },
         "chan_multiSF_4": {
+            /* Channel 12, 904.700 Mhz */
             "enable": true,
             "radio": 1,
             "if": -300000
         },
         "chan_multiSF_5": {
+            /* Channel 13, 904.900 Mhz */
             "enable": true,
             "radio": 1,
             "if": -100000
         },
         "chan_multiSF_6": {
+            /* Channel 14, 905.100 Mhz */
             "enable": true,
             "radio": 1,
             "if": 100000
         },
         "chan_multiSF_7": {
+            /* Channel 15, 905.300 Mhz */
             "enable": true,
             "radio": 1,
             "if": 300000
         },
         "chan_Lora_std": {
+            /* Channel 65 (fat channel), 904.6 Mhz */
             "enable": true,
             "radio": 0,
             "if": 300000,
@@ -94,6 +103,7 @@
             "spread_factor": 8
         },
         "chan_FSK": {
+            /* disabled */
             "enable": false,
             "radio": 0,
             "if": 300000,
