@@ -94,7 +94,6 @@
             "spread_factor": 7
         },
         "chan_FSK": {
-            /* disabled */
             "enable": false,
             "radio": 0,
             "if": 300000,
