@@ -17,7 +17,7 @@ FROM $PKTFWD_PATH AS packet_forwarder
 
 ####################################################################################################
 ########################### Stage: PktFwd Python App Builder #######################################
-FROM balenalib/"$BUILD_BOARD"-debian-python:bullseye-build-20221215 AS pktfwd-builder
+FROM balenalib/"$BUILD_BOARD"-debian-python:bullseye-build-20230530 AS pktfwd-builder
 
 # Variables used internally to this stage
 ENV INPUT_DIR=/opt/input
@@ -34,7 +34,7 @@ RUN pip3 install --target="$OUTPUT_DIR" --no-cache-dir -r requirements.txt
 
 ###################################################################################################
 ################################## Stage: runner ##################################################
-FROM balenalib/"$BUILD_BOARD"-debian-python:bullseye-run-20221215 AS pktfwd-runner
+FROM balenalib/"$BUILD_BOARD"-debian-python:bullseye-run-20230530 AS pktfwd-runner
 
 ENV ROOT_DIR=/opt
 
