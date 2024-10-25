@@ -10,8 +10,10 @@ jobs:
           - board: "raspberrypi3-64"
             arch: "arm64"
             version: "v8"
+            arch_full: "linux/arm64/v8"
           - board: "generic-amd64"
             arch: "amd64"
+            arch_full: "linux/amd64"
 
     runs-on: ubuntu-20.04
     permissions:
@@ -57,6 +59,8 @@ jobs:
             BUILD_BOARD=${{ matrix.board }}
             BUILD_ARCH=${{ matrix.arch }}
           push: true
+          platforms: ${{ matrix.arch_full }}
+          provenance: false
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=registry,ref=nebraltd/hm-pktfwd:buildcache
