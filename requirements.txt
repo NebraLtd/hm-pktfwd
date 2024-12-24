@@ -1,4 +1,4 @@
 sentry-sdk==2.8.0
 tenacity==8.2.2
-Jinja2==3.1.4
+Jinja2==3.1.5
 hm-pyhelper==0.14.32
